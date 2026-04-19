@@ -52,8 +52,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const TOTAL_FRAMES   = 145;
-    const SCROLL_PX      = 200; // scroll pixels per frame
+    const TOTAL_FRAMES   = 60;
+    const SCROLL_PX      = 16; // scroll pixels per frame
     const ctx            = canvas.getContext('2d');
     const images         = new Array(TOTAL_FRAMES).fill(null);
     let loadedCount      = 0;
