@@ -14,17 +14,84 @@ document.addEventListener('DOMContentLoaded', () => {
     onScroll();
   }
 
-  // ── Hero parallax ─────────────────────────────────────────
-  const heroBg = document.querySelector('.hero-bg');
-  if (heroBg && window.matchMedia('(min-width: 1024px)').matches) {
+  // ── Hero — scroll-scrub video ─────────────────────────────
+  (function initHeroScrub() {
+    const heroSection    = document.querySelector('.hero');
+    const heroVideo      = document.querySelector('.hero-video');
+    const progressFillEl = document.querySelector('.hero-progress-fill');
+    const hintEl         = document.querySelector('.hero-hint');
+    const continueEl     = document.querySelector('.hero-continue');
+
+    if (!heroVideo || !heroSection) return;
+
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!prefersReduced) {
-      window.addEventListener('scroll', () => {
-        const scrollY = window.scrollY;
-        heroBg.style.transform = `translateY(${scrollY * 0.35}px)`;
-      }, { passive: true });
+    if (prefersReduced) return;
+
+    // px of scrollable distance per second of video — tune for feel
+    const SCROLL_PER_SEC = 220;
+
+    let videoDuration = 0;
+
+    function applyHeight() {
+      if (!videoDuration) return;
+      heroSection.style.height = `calc(100vh + ${Math.ceil(videoDuration * SCROLL_PER_SEC)}px)`;
     }
-  }
+
+    // Decode as fast as possible
+    heroVideo.preload = 'auto';
+    heroVideo.load();
+
+    heroVideo.addEventListener('loadedmetadata', () => {
+      videoDuration = heroVideo.duration;
+      heroVideo.currentTime = 0; // park at frame 0
+      applyHeight();
+    });
+
+    // Handle already-cached video
+    if (heroVideo.readyState >= 1) {
+      videoDuration = heroVideo.duration;
+      applyHeight();
+    }
+
+    let rafId = null;
+    let lastProgress = -1;
+
+    function onScroll() {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+
+        const sectionTop = heroSection.getBoundingClientRect().top + window.scrollY;
+        const scrollable = heroSection.offsetHeight - window.innerHeight;
+        const scrolled   = window.scrollY - sectionTop;
+        const progress   = Math.max(0, Math.min(1, scrolled / scrollable));
+
+        if (Math.abs(progress - lastProgress) < 0.0005) return;
+        lastProgress = progress;
+
+        // Scrub video currentTime
+        if (videoDuration) {
+          heroVideo.currentTime = progress * videoDuration * 0.998;
+        }
+
+        // Progress bar
+        if (progressFillEl) {
+          progressFillEl.style.transform = `scaleY(${progress})`;
+        }
+
+        // Hint: visible at start, hidden mid-video, replaced by continue at end
+        if (hintEl) {
+          hintEl.style.opacity    = progress < 0.06 ? '1' : '0';
+        }
+        if (continueEl) {
+          continueEl.style.opacity = progress > 0.93 ? '1' : '0';
+        }
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
 
   // ── Mobile hamburger menu ─────────────────────────────────
   const hamburger = document.querySelector('.nav-hamburger');

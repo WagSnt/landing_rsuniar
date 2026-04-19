@@ -292,60 +292,83 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 
 @media (min-width: 1024px) { .nav-drawer { display: none; } }
 
-/* ── Hero ──────────────────────────────────────────────────── */
+/* ── Hero — Scroll-scrub video ─────────────────────────────── */
+
+/* Outer section: gets dynamic height from JS (100vh + video_duration × px_per_sec) */
 .hero {
-  min-height: 100vh; min-height: 100dvh;
-  position: relative; display: flex; align-items: center;
-  padding-top: 72px; overflow: hidden;
+  position: relative;
+  height: 100vh; /* JS overrides once video metadata loads */
 }
 
-.hero-bg {
+/* Sticky viewport — stays fixed while user scrolls through hero section */
+.hero-sticky {
+  position: sticky; top: 0;
+  height: 100vh; overflow: hidden;
+}
+
+/* Full-bleed video */
+.hero-video {
   position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  will-change: transform; /* GPU layer hint */
+}
+
+/* Radial vignette — darkens edges, focuses center */
+.hero-vignette {
+  position: absolute; inset: 0; z-index: 1;
+  background: radial-gradient(
+    ellipse 110% 100% at 50% 50%,
+    transparent 20%,
+    rgba(5,14,26,.55) 75%,
+    rgba(5,14,26,.80) 100%
+  );
+  pointer-events: none;
+}
+
+/* Cinematic gradient — top nav legibility + bottom content legibility */
+.hero-gradient {
+  position: absolute; inset: 0; z-index: 2;
   background:
-    radial-gradient(ellipse at 75% 20%, rgba(37,166,217,.25) 0%, transparent 50%),
-    radial-gradient(ellipse at 10% 80%, rgba(35,183,217,.14) 0%, transparent 48%),
-    linear-gradient(148deg, #071522 0%, #0D2840 38%, #0d3360 72%, #071e38 100%);
-  background-size: cover; background-position: center;
-  will-change: transform;
-}
-
-/* Grain texture */
-.hero-bg::before {
-  content: '';
-  position: absolute; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  background-size: 256px 256px;
+    linear-gradient(180deg,
+      rgba(5,14,26,.55) 0%,
+      rgba(5,14,26,.10) 18%,
+      transparent 38%,
+      transparent 48%,
+      rgba(5,14,26,.40) 65%,
+      rgba(5,14,26,.80) 82%,
+      rgba(5,14,26,.95) 100%
+    );
   pointer-events: none;
 }
 
-/* Subtle grid lines */
-.hero-bg::after {
-  content: '';
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(162,212,242,.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(162,212,242,.04) 1px, transparent 1px);
-  background-size: 64px 64px;
-  pointer-events: none;
+/* Content layer — sits above overlays */
+.hero-content-layer {
+  position: absolute; inset: 0; z-index: 3;
+  display: flex; align-items: center; justify-content: center;
+  padding-top: 72px; /* clear nav */
 }
 
-.hero .container {
-  position: relative; z-index: 2;
-  width: 100%;
-  padding-top: 56px; padding-bottom: 80px;
-}
-@media (min-width: 1024px) {
-  .hero .container { padding-top: 96px; padding-bottom: 120px; }
+/* Centered content block */
+.hero-content {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto;
+  /* Subtle entry animation (only on first load, not scroll-driven) */
+  animation: hero-in 900ms cubic-bezier(.22,1,.36,1) both;
 }
 
-.hero-content { max-width: 660px; }
+@keyframes hero-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
 .hero-eyebrow {
-  display: inline-flex; align-items: center; gap: 10px;
-  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--blue-200);
   margin-bottom: 28px;
-  animation: fade-up 500ms ease both; animation-delay: 200ms;
+  text-shadow: 0 1px 8px rgba(0,0,0,.4);
 }
 
 .eyebrow-dot {
@@ -361,29 +384,95 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 
 .hero-title {
   font-family: var(--font-heading);
-  font-size: clamp(2.4rem, 6vw, 4.25rem);
-  font-weight: 800; line-height: 1.05;
-  letter-spacing: -0.03em;
-  color: #fff; margin-bottom: 24px;
-  animation: fade-up 550ms ease both; animation-delay: 330ms;
+  font-size: clamp(2.25rem, 6vw, 4.25rem);
+  font-weight: 800; line-height: 1.06;
+  letter-spacing: -0.03em; color: #fff;
+  margin-bottom: 24px;
+  text-shadow: 0 2px 24px rgba(0,0,0,.45);
 }
-.hero-title em { font-style: normal; color: var(--blue-500); }
+.hero-title em { font-style: normal; color: var(--blue-400, #4dc1e8); }
 
 .hero-sub {
-  font-size: 1.0625rem; color: rgba(255,255,255,.72);
-  line-height: 1.75; max-width: 52ch;
-  margin-bottom: 40px;
-  animation: fade-up 550ms ease both; animation-delay: 460ms;
+  font-size: 1.0625rem; color: rgba(255,255,255,.75);
+  line-height: 1.75; max-width: 54ch;
+  margin: 0 auto 40px;
+  text-shadow: 0 1px 8px rgba(0,0,0,.35);
 }
 
 .hero-actions {
   display: flex; flex-wrap: wrap; gap: 12px;
-  animation: fade-up 550ms ease both; animation-delay: 580ms;
+  justify-content: center;
 }
 
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* ── Hero — Progress bar (right edge) ──────────────────────── */
+.hero-progress {
+  position: absolute; right: 28px; top: 50%; z-index: 4;
+  transform: translateY(-50%);
+  width: 2px; height: 100px;
+  background: rgba(255,255,255,.12);
+  border-radius: 2px; overflow: hidden;
+}
+@media (max-width: 767px) { .hero-progress { right: 14px; height: 72px; } }
+
+.hero-progress-fill {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, var(--blue-500), var(--blue-600));
+  transform: scaleY(0); transform-origin: top;
+  border-radius: 2px;
+  transition: transform 80ms linear;
+}
+
+/* ── Hero — Scroll hint ─────────────────────────────────────── */
+.hero-hint {
+  position: absolute; bottom: 36px; left: 50%; z-index: 4;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  color: rgba(255,255,255,.65);
+  transition: opacity 400ms ease;
+  pointer-events: none;
+}
+.hero-hint-label {
+  font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.hero-hint-arrow {
+  animation: hint-bounce 2s ease-in-out infinite;
+}
+@keyframes hint-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(7px); }
+}
+
+/* ── Hero — Continue prompt (when video ends) ──────────────── */
+.hero-continue {
+  position: absolute; bottom: 36px; left: 50%; z-index: 4;
+  transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  color: var(--blue-200); opacity: 0;
+  transition: opacity 600ms ease;
+  pointer-events: none;
+}
+.hero-continue span {
+  font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.hero-continue svg {
+  animation: continue-pulse 1.4s ease-in-out infinite;
+}
+@keyframes continue-pulse {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50%       { transform: translateY(6px); opacity: .6; }
+}
+
+/* reduced-motion fallback — show gradient instead of video */
+@media (prefers-reduced-motion: reduce) {
+  .hero-video { display: none; }
+  .hero-sticky {
+    background:
+      radial-gradient(ellipse at 75% 20%, rgba(37,166,217,.25) 0%, transparent 50%),
+      linear-gradient(148deg, #071522 0%, #0D2840 38%, #0d3360 72%, #071e38 100%);
+  }
+  .hero { height: 100vh; }
 }
 
 /* ── Trust Strip ───────────────────────────────────────────── */
