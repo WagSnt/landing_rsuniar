@@ -14,6 +14,18 @@ document.addEventListener('DOMContentLoaded', () => {
     onScroll();
   }
 
+  // ── Hero parallax ─────────────────────────────────────────
+  const heroBg = document.querySelector('.hero-bg');
+  if (heroBg && window.matchMedia('(min-width: 1024px)').matches) {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReduced) {
+      window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        heroBg.style.transform = `translateY(${scrollY * 0.35}px)`;
+      }, { passive: true });
+    }
+  }
+
   // ── Mobile hamburger menu ─────────────────────────────────
   const hamburger = document.querySelector('.nav-hamburger');
   const drawer    = document.querySelector('.nav-drawer');
@@ -216,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const id = entry.target.id;
           navLinks.forEach(link => {
             link.style.color = link.getAttribute('href') === `#${id}`
-              ? 'var(--brand-cyan)'
+              ? 'var(--blue-500)'
               : '';
           });
         }
