@@ -95,6 +95,61 @@ document.addEventListener('DOMContentLoaded', () => {
     statEls.forEach(el => counterObs.observe(el));
   }
 
+  // ── Service accordion ─────────────────────────────────────
+  const serviceItems = document.querySelectorAll('.service-item');
+  serviceItems.forEach(item => {
+    const trigger = item.querySelector('.service-trigger');
+    const body    = item.querySelector('.service-body');
+    if (!trigger || !body) return;
+
+    // Set initial max-height for the open item
+    if (item.classList.contains('open')) {
+      body.style.maxHeight = body.scrollHeight + 'px';
+    }
+
+    trigger.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+
+      // Close all
+      serviceItems.forEach(i => {
+        i.classList.remove('open');
+        const b = i.querySelector('.service-body');
+        if (b) b.style.maxHeight = '0';
+        const t = i.querySelector('.service-trigger');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      });
+
+      // Open clicked if it was closed
+      if (!isOpen) {
+        item.classList.add('open');
+        body.style.maxHeight = body.scrollHeight + 'px';
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
+  // ── Segment tabs ──────────────────────────────────────────
+  const segmentTabs   = document.querySelectorAll('.segment-tab');
+  const segmentPanels = document.querySelectorAll('.segment-panel');
+
+  segmentTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.target;
+
+      segmentTabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      segmentPanels.forEach(p => p.classList.remove('active'));
+
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+
+      const panel = document.getElementById(`seg-${target}`);
+      if (panel) panel.classList.add('active');
+    });
+  });
+
   // ── FAQ accordion ─────────────────────────────────────────
   const faqItems = document.querySelectorAll('.faq-item');
   faqItems.forEach((item, index) => {
