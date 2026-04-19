@@ -43,6 +43,9 @@
 </head>
 <body>
 
+<!-- Grain texture overlay — all dark sections -->
+<div class="site-grain" aria-hidden="true"></div>
+
 <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo principal</a>
 
 <!-- ── NAV ─────────────────────────────────────────────────── -->
@@ -120,10 +123,14 @@
     <div class="hero-vignette"  aria-hidden="true"></div>
     <div class="hero-gradient"  aria-hidden="true"></div>
 
-    <!-- Content layer — centered -->
+    <!-- Content layer — bottom-left editorial -->
     <div class="hero-content-layer">
       <div class="container">
         <div class="hero-content">
+
+          <div class="hero-accent-line" aria-hidden="true">
+            <span class="hero-accent-label">Climatização Premium · Sul do Brasil</span>
+          </div>
 
           <h1 class="hero-title" id="hero-title">
             Climatização de precisão<br>
@@ -199,6 +206,74 @@
 </div>
 
 
+<!-- ── EXPERTISE — Editorial split ─────────────────────────── -->
+<section class="expertise-section" aria-labelledby="expertise-title">
+
+  <div class="expertise-photo-side" aria-hidden="true">
+    <div class="expertise-photo-wrap">
+      <img src="images/expertise-bg.jpg" alt="" loading="lazy" class="expertise-photo-img" />
+    </div>
+    <div class="expertise-overlay-stat reveal">
+      <div class="expertise-overlay-num">2.000+</div>
+      <div class="expertise-overlay-txt">Obras entregues<br>no Sul do Brasil</div>
+    </div>
+    <div class="expertise-photo-border" aria-hidden="true"></div>
+  </div>
+
+  <div class="expertise-content-side">
+    <div class="expertise-content-inner">
+      <p class="section-label">Nossa expertise</p>
+      <h2 class="expertise-title" id="expertise-title">
+        Engenharia de<br>climatização de<br><em>alto desempenho.</em>
+      </h2>
+      <p class="expertise-desc">
+        Fundada por engenheiros registrados no CREA, a RS UNIAR une capacidade técnica e rigor documental em cada projeto — do briefing inicial ao laudo de entrega. Não entregamos apenas equipamentos: entregamos sistemas que funcionam.
+      </p>
+      <ul class="expertise-points">
+        <li>
+          <span class="expertise-point-icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          Engenheiro CREA responsável em todos os projetos
+        </li>
+        <li>
+          <span class="expertise-point-icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          Laudos, ART, PMOC e relatórios técnicos incluídos
+        </li>
+        <li>
+          <span class="expertise-point-icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          Conformidade com ABNT, ANVISA e legislação federal
+        </li>
+        <li>
+          <span class="expertise-point-icon" aria-hidden="true">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          SLA definido em contrato para clientes corporativos
+        </li>
+      </ul>
+      <div class="expertise-certs">
+        <div class="expertise-cert-item">
+          <div class="expertise-cert-badge">CREA-RS</div>
+          <span>Registro ativo</span>
+        </div>
+        <div class="expertise-cert-item">
+          <div class="expertise-cert-badge">PMOC</div>
+          <span>Lei 13.589/2018</span>
+        </div>
+        <div class="expertise-cert-item">
+          <div class="expertise-cert-badge">ABNT</div>
+          <span>NBR 13.971</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
 <!-- ── SERVIÇOS — Accordion editorial ────────────────────── -->
 <section class="services section-pad" id="servicos" aria-labelledby="services-title">
   <div class="container">
@@ -218,6 +293,9 @@
           <span class="service-toggle" aria-hidden="true"></span>
         </button>
         <div class="service-body">
+          <div class="service-visual-banner" aria-hidden="true">
+            <img src="images/services/instalacao.jpg" alt="" loading="lazy" class="service-visual-photo" />
+          </div>
           <div class="service-body-inner">
             <p>Splits, multi-splits, cassetes, dutos e sistemas centrais. Execução certificada com laudo técnico e garantia contratual. Nossa equipe atua com metodologia rigorosa em qualquer porte de obra.</p>
             <ul class="service-list">
@@ -238,6 +316,9 @@
           <span class="service-toggle" aria-hidden="true"></span>
         </button>
         <div class="service-body">
+          <div class="service-visual-banner" aria-hidden="true">
+            <img src="images/services/manutencao.jpg" alt="" loading="lazy" class="service-visual-photo" />
+          </div>
           <div class="service-body-inner">
             <p>Contratos periódicos com revisão completa, limpeza de filtros, verificação de gás e relatório técnico detalhado. Reduz falhas, estende a vida útil dos equipamentos e mantém eficiência energética.</p>
             <ul class="service-list">
@@ -258,6 +339,9 @@
           <span class="service-toggle" aria-hidden="true"></span>
         </button>
         <div class="service-body">
+          <div class="service-visual-banner" aria-hidden="true">
+            <img src="images/services/pmoc.jpg" alt="" loading="lazy" class="service-visual-photo" />
+          </div>
           <div class="service-body-inner">
             <p>Elaboração e execução do Plano de Manutenção, Operação e Controle obrigatório para hospitais, clínicas, shoppings, hotéis e repartições públicas. Elaborado por engenheiro registrado no CREA.</p>
             <ul class="service-list">
@@ -278,6 +362,9 @@
           <span class="service-toggle" aria-hidden="true"></span>
         </button>
         <div class="service-body">
+          <div class="service-visual-banner" aria-hidden="true">
+            <img src="images/services/vrf.jpg" alt="" loading="lazy" class="service-visual-photo" />
+          </div>
           <div class="service-body-inner">
             <p>Dimensionamento, especificação e implantação de sistemas centrais de grande porte para galpões industriais, hospitais, shoppings e edifícios corporativos. Soluções de alta eficiência e controle preciso.</p>
             <ul class="service-list">
@@ -294,6 +381,70 @@
     </div>
   </div>
 </section>
+
+<!-- ── GALERIA DE OBRAS ─────────────────────────────────────── -->
+<div class="gallery-strip" aria-label="Galeria de obras RS UNIAR">
+  <div class="gallery-strip-head">
+    <span class="gallery-strip-label">Galeria de obras</span>
+    <span class="gallery-strip-hint" aria-hidden="true">← deslize →</span>
+  </div>
+  <div class="gallery-track" role="list">
+    <div class="gallery-item" role="listitem">
+      <div class="gallery-item-img">
+        <img src="images/gallery/obra-residencial.jpg" alt="Instalação split residencial alto padrão" loading="lazy" />
+      </div>
+      <div class="gallery-item-overlay">
+        <span>Residencial</span>
+        <span>Porto Alegre, RS</span>
+      </div>
+    </div>
+    <div class="gallery-item" role="listitem">
+      <div class="gallery-item-img">
+        <img src="images/gallery/obra-escritorio.jpg" alt="Sistema VRF para escritório corporativo" loading="lazy" />
+      </div>
+      <div class="gallery-item-overlay">
+        <span>Corporativo VRF</span>
+        <span>Caxias do Sul, RS</span>
+      </div>
+    </div>
+    <div class="gallery-item" role="listitem">
+      <div class="gallery-item-img">
+        <img src="images/gallery/obra-industrial.jpg" alt="Chiller industrial em galpão" loading="lazy" />
+      </div>
+      <div class="gallery-item-overlay">
+        <span>Industrial · Chiller</span>
+        <span>Novo Hamburgo, RS</span>
+      </div>
+    </div>
+    <div class="gallery-item" role="listitem">
+      <div class="gallery-item-img">
+        <img src="images/gallery/obra-hospital.jpg" alt="UTA ambiente hospitalar sala limpa" loading="lazy" />
+      </div>
+      <div class="gallery-item-overlay">
+        <span>Hospitalar · UTA</span>
+        <span>Florianópolis, SC</span>
+      </div>
+    </div>
+    <div class="gallery-item" role="listitem">
+      <div class="gallery-item-img">
+        <img src="images/gallery/obra-hotel.jpg" alt="Sistema central para hotel" loading="lazy" />
+      </div>
+      <div class="gallery-item-overlay">
+        <span>Hotelaria</span>
+        <span>Curitiba, PR</span>
+      </div>
+    </div>
+    <div class="gallery-item" role="listitem">
+      <div class="gallery-item-img">
+        <img src="images/gallery/obra-comercial.jpg" alt="Ar condicionado shopping center" loading="lazy" />
+      </div>
+      <div class="gallery-item-overlay">
+        <span>Comercial · PMOC</span>
+        <span>Joinville, SC</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ── SEGMENTOS — Tabs interativos ──────────────────────── -->
 <section class="segments section-pad" id="segmentos" aria-labelledby="segments-title">
@@ -314,51 +465,75 @@
 
       <div class="segment-panels">
         <div class="segment-panel active" id="seg-residencial" role="tabpanel">
-          <h3>Residencial Alto Padrão</h3>
-          <p>Casas e apartamentos de luxo com soluções integradas, discretas e de alta eficiência energética. Priorizamos a invisibilidade da instalação e o silêncio dos equipamentos para garantir conforto total.</p>
-          <ul>
-            <li>Sistemas multi-split com controle individual por ambiente</li>
-            <li>Equipamentos de baixo nível de ruído (certificados)</li>
-            <li>Instalação embutida com acabamento arquitetônico</li>
-            <li>Automação e controle via smartphone</li>
-            <li>Visita técnica sem custo para projetos qualificados</li>
-          </ul>
+          <div class="seg-img-side" aria-hidden="true">
+            <img src="images/segments/residencial.jpg" alt="" loading="lazy" />
+          </div>
+          <div class="seg-text-side">
+            <h3>Residencial Alto Padrão</h3>
+            <p>Casas e apartamentos de luxo com soluções integradas, discretas e de alta eficiência energética. Priorizamos a invisibilidade da instalação e o silêncio dos equipamentos para garantir conforto total.</p>
+            <ul>
+              <li>Sistemas multi-split com controle individual por ambiente</li>
+              <li>Equipamentos de baixo nível de ruído (certificados)</li>
+              <li>Instalação embutida com acabamento arquitetônico</li>
+              <li>Automação e controle via smartphone</li>
+              <li>Visita técnica sem custo para projetos qualificados</li>
+            </ul>
+            <a href="#contato" class="btn btn-outline-navy btn-sm" style="margin-top:20px">Solicitar visita técnica <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          </div>
         </div>
 
         <div class="segment-panel" id="seg-comercial" role="tabpanel">
-          <h3>Comercial</h3>
-          <p>Escritórios, shoppings, hotéis e estabelecimentos comerciais exigem conforto para grandes fluxos de pessoas e disponibilidade contínua dos sistemas. Trabalhamos com SLA e contratos de manutenção adequados ao setor.</p>
-          <ul>
-            <li>Sistemas VRF para escritórios e centros empresariais</li>
-            <li>PMOC obrigatório para hotéis, shoppings e espaços coletivos</li>
-            <li>Contratos de manutenção com atendimento prioritário</li>
-            <li>Execução sem interrupção das operações do cliente</li>
-            <li>Laudos e documentação para auditorias e seguradoras</li>
-          </ul>
+          <div class="seg-img-side" aria-hidden="true">
+            <img src="images/segments/comercial.jpg" alt="" loading="lazy" />
+          </div>
+          <div class="seg-text-side">
+            <h3>Comercial</h3>
+            <p>Escritórios, shoppings, hotéis e estabelecimentos comerciais exigem conforto para grandes fluxos de pessoas e disponibilidade contínua dos sistemas. Trabalhamos com SLA e contratos adequados ao setor.</p>
+            <ul>
+              <li>Sistemas VRF para escritórios e centros empresariais</li>
+              <li>PMOC obrigatório para hotéis, shoppings e espaços coletivos</li>
+              <li>Contratos de manutenção com atendimento prioritário</li>
+              <li>Execução sem interrupção das operações do cliente</li>
+              <li>Laudos e documentação para auditorias e seguradoras</li>
+            </ul>
+            <a href="#contato" class="btn btn-outline-navy btn-sm" style="margin-top:20px">Solicitar orçamento <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          </div>
         </div>
 
         <div class="segment-panel" id="seg-industrial" role="tabpanel">
-          <h3>Industrial</h3>
-          <p>Galpões, linhas de produção e cold rooms com controle rigoroso de temperatura e umidade conforme os processos produtivos. Nossos projetos industriais contemplam redundância e alta disponibilidade.</p>
-          <ul>
-            <li>Chiller e torres de resfriamento para galpões de grande porte</li>
-            <li>Controle de temperatura e umidade para processos produtivos</li>
-            <li>Cold rooms e câmaras frigoríficas</li>
-            <li>Projetos com redundância e alta disponibilidade</li>
-            <li>Conformidade com normas de segurança industrial</li>
-          </ul>
+          <div class="seg-img-side" aria-hidden="true">
+            <img src="images/segments/industrial.jpg" alt="" loading="lazy" />
+          </div>
+          <div class="seg-text-side">
+            <h3>Industrial</h3>
+            <p>Galpões, linhas de produção e cold rooms com controle rigoroso de temperatura e umidade conforme os processos produtivos. Nossos projetos industriais contemplam redundância e alta disponibilidade.</p>
+            <ul>
+              <li>Chiller e torres de resfriamento para galpões de grande porte</li>
+              <li>Controle de temperatura e umidade para processos produtivos</li>
+              <li>Cold rooms e câmaras frigoríficas</li>
+              <li>Projetos com redundância e alta disponibilidade</li>
+              <li>Conformidade com normas de segurança industrial</li>
+            </ul>
+            <a href="#contato" class="btn btn-outline-navy btn-sm" style="margin-top:20px">Solicitar projeto <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          </div>
         </div>
 
         <div class="segment-panel" id="seg-hospitalar" role="tabpanel">
-          <h3>Hospitalar e Saúde</h3>
-          <p>Ambientes críticos — CTI, centros cirúrgicos, salas limpas, farmácias e laboratórios — exigem domínio técnico e conformidade regulatória rigorosa. Nossos projetos atendem ANVISA RDC 50 e ABNT NBR 7256.</p>
-          <ul>
-            <li>Controle de pressão diferencial em ambientes críticos</li>
-            <li>Temperatura, umidade e qualidade microbiológica do ar</li>
-            <li>Conformidade com ANVISA RDC 50 e ABNT NBR 7256</li>
-            <li>PMOC hospitalar elaborado por engenheiro CREA</li>
-            <li>Manutenção corretiva urgente sem interrupção de atividades</li>
-          </ul>
+          <div class="seg-img-side" aria-hidden="true">
+            <img src="images/segments/hospitalar.jpg" alt="" loading="lazy" />
+          </div>
+          <div class="seg-text-side">
+            <h3>Hospitalar e Saúde</h3>
+            <p>Ambientes críticos — CTI, centros cirúrgicos, salas limpas, farmácias e laboratórios — exigem domínio técnico e conformidade regulatória rigorosa. Nossos projetos atendem ANVISA RDC 50 e ABNT NBR 7256.</p>
+            <ul>
+              <li>Controle de pressão diferencial em ambientes críticos</li>
+              <li>Temperatura, umidade e qualidade microbiológica do ar</li>
+              <li>Conformidade com ANVISA RDC 50 e ABNT NBR 7256</li>
+              <li>PMOC hospitalar elaborado por engenheiro CREA</li>
+              <li>Manutenção corretiva urgente sem interrupção de atividades</li>
+            </ul>
+            <a href="#contato" class="btn btn-outline-navy btn-sm" style="margin-top:20px">Falar com especialista <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          </div>
         </div>
       </div>
     </div>
@@ -444,23 +619,31 @@
       <h2 class="section-title" id="proof-title">Quem confia<br>na RS UNIAR.</h2>
     </div>
 
-    <div class="testimonials-grid">
-
-      <article class="testimonial reveal reveal-delay-1">
-        <div class="testimonial-stars" aria-label="5 estrelas">★★★★★</div>
-        <blockquote>
-          "A RS UNIAR implantou o PMOC em nossa clínica com toda a documentação exigida pela vigilância sanitária. Processo ágil, sem burocracia. Renovamos contrato por mais 3 anos."
+    <!-- Featured testimonial -->
+    <article class="testimonial-featured reveal" aria-label="Depoimento em destaque">
+      <div class="testimonial-featured-bg" aria-hidden="true">
+        <img src="images/testimonial-bg.jpg" alt="" loading="lazy" />
+      </div>
+      <div class="testimonial-featured-content">
+        <div class="quote-mark" aria-hidden="true">"</div>
+        <blockquote class="testimonial-featured-quote">
+          A RS UNIAR implantou o PMOC em nossa clínica com toda a documentação exigida pela vigilância sanitária. Processo ágil, sem burocracia — e renovamos contrato por mais 3 anos. É o tipo de parceiro que você quer ao lado.
         </blockquote>
-        <footer class="testimonial-author">
-          <div class="author-initials" aria-hidden="true">MC</div>
-          <div>
+        <footer class="testimonial-featured-author">
+          <div class="author-avatar-lg" aria-hidden="true">MC</div>
+          <div class="testimonial-featured-meta">
             <p class="author-name">Dra. Mariana C.</p>
             <p class="author-role">Diretora Clínica Médica · Porto Alegre, RS</p>
           </div>
+          <div class="testimonial-featured-stars" aria-label="5 estrelas">★★★★★</div>
         </footer>
-      </article>
+      </div>
+    </article>
 
-      <article class="testimonial reveal reveal-delay-2">
+    <!-- Secondary grid -->
+    <div class="testimonials-grid">
+
+      <article class="testimonial reveal reveal-delay-1">
         <div class="testimonial-stars" aria-label="5 estrelas">★★★★★</div>
         <blockquote>
           "Contratamos para um galpão industrial de 4.000 m² em Caxias. O projeto VRF foi entregue no prazo, dentro do orçamento e com laudo CREA. Zero intercorrências desde a instalação."
@@ -474,7 +657,7 @@
         </footer>
       </article>
 
-      <article class="testimonial reveal reveal-delay-3">
+      <article class="testimonial reveal reveal-delay-2">
         <div class="testimonial-stars" aria-label="5 estrelas">★★★★★</div>
         <blockquote>
           "Como síndico de uma torre comercial, precisava de uma empresa que entendesse de PMOC e executasse tudo sem parar as operações. A RS UNIAR resolveu sem complicações."
@@ -614,6 +797,9 @@
 
 <!-- ── CTA FINAL + FORMULÁRIO ────────────────────────────── -->
 <section class="contact section-pad" id="contato" aria-labelledby="contact-title">
+  <div class="contact-scene-bg" aria-hidden="true">
+    <img src="images/contact-bg.jpg" alt="" loading="lazy" />
+  </div>
   <div class="container">
     <div class="contact-inner">
 
