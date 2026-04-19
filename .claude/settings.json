@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell.exe -Command \"Get-Command node -ErrorAction SilentlyContinue; Get-Command npm -ErrorAction SilentlyContinue; [System.Environment]::GetEnvironmentVariable\\('PATH', 'Machine'\\) -split ';' | Select-String -Pattern 'node|nvm'\")"
+    ]
+  }
+}
