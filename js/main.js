@@ -4,93 +4,157 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // ── Navigation scroll effect ─────────────────────────────
+  // ── Navigation scroll effect (scrolled styling only) ──────
+  // nav-visible class is managed by IntersectionObserver in hero scrub block
   const nav = document.querySelector('.nav');
   if (nav) {
-    const onScroll = () => {
-      nav.classList.toggle('scrolled', window.scrollY > 40);
+    const onNavScroll = () => {
+      // Only toggle scrolled (white bg) — visibility is handled separately
+      if (nav.classList.contains('nav-visible')) {
+        nav.classList.toggle('scrolled', window.scrollY > 40);
+      }
     };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+    window.addEventListener('scroll', onNavScroll, { passive: true });
   }
 
-  // ── Hero — scroll-scrub video ─────────────────────────────
-  (function initHeroScrub() {
+  // ── Hero — canvas image-sequence scrubber (Apple-style) ───
+  (function initHeroCanvasScrub() {
     const heroSection    = document.querySelector('.hero');
-    const heroVideo      = document.querySelector('.hero-video');
+    const canvas         = document.querySelector('.hero-canvas');
+    const loaderEl       = document.querySelector('.hero-loader');
+    const loaderFillEl   = document.querySelector('.hero-loader-fill');
     const progressFillEl = document.querySelector('.hero-progress-fill');
     const hintEl         = document.querySelector('.hero-hint');
     const continueEl     = document.querySelector('.hero-continue');
+    const nav            = document.querySelector('.nav');
+    const trustStrip     = document.querySelector('.trust-strip');
 
-    if (!heroVideo || !heroSection) return;
+    // Nav: reveal smoothly when trust strip enters view (past hero)
+    if (nav && trustStrip) {
+      const navRevealObs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          // Show nav if trust-strip is visible OR has already scrolled past top
+          const show = entry.isIntersecting || entry.boundingClientRect.top < 0;
+          nav.classList.toggle('nav-visible', show);
+          // Also keep scrolled styling when past hero
+          if (show) nav.classList.add('scrolled');
+        });
+      }, { threshold: 0, rootMargin: '0px 0px 0px 0px' });
+      navRevealObs.observe(trustStrip);
+    }
+
+    if (!canvas || !heroSection) return;
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) return;
-
-    // px of scrollable distance per second of video — tune for feel
-    const SCROLL_PER_SEC = 220;
-
-    let videoDuration = 0;
-
-    function applyHeight() {
-      if (!videoDuration) return;
-      heroSection.style.height = `calc(100vh + ${Math.ceil(videoDuration * SCROLL_PER_SEC)}px)`;
+    if (prefersReduced) {
+      // Just show nav immediately in reduced-motion mode
+      if (nav) nav.classList.add('nav-visible');
+      return;
     }
 
-    // Decode as fast as possible
-    heroVideo.preload = 'auto';
-    heroVideo.load();
+    const TOTAL_FRAMES   = 145;
+    const SCROLL_PX      = 200; // scroll pixels per frame
+    const ctx            = canvas.getContext('2d');
+    const images         = new Array(TOTAL_FRAMES).fill(null);
+    let loadedCount      = 0;
+    let allReady         = false;
+    let currentFrameIdx  = -1;
 
-    heroVideo.addEventListener('loadedmetadata', () => {
-      videoDuration = heroVideo.duration;
-      heroVideo.currentTime = 0; // park at frame 0
-      applyHeight();
-    });
+    // Set section height so user can scroll through all frames
+    heroSection.style.height = `calc(100vh + ${TOTAL_FRAMES * SCROLL_PX}px)`;
 
-    // Handle already-cached video
-    if (heroVideo.readyState >= 1) {
-      videoDuration = heroVideo.duration;
-      applyHeight();
+    // ── Canvas sizing (cover behaviour) ─────────────────────
+    function resizeCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      canvas.width  = Math.floor(window.innerWidth  * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width  = window.innerWidth  + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.scale(dpr, dpr);
+      drawFrame(currentFrameIdx < 0 ? 0 : currentFrameIdx);
+    }
+    window.addEventListener('resize', resizeCanvas, { passive: true });
+    resizeCanvas();
+
+    // ── Draw one frame (cover-fit) ───────────────────────────
+    function drawFrame(idx) {
+      const img = images[idx];
+      if (!img?.complete || !img.naturalWidth) return;
+
+      const cw = window.innerWidth;
+      const ch = window.innerHeight;
+      const iw = img.naturalWidth;
+      const ih = img.naturalHeight;
+      const scale = Math.max(cw / iw, ch / ih);
+      const sw    = iw * scale;
+      const sh    = ih * scale;
+      const sx    = (cw - sw) / 2;
+      const sy    = (ch - sh) / 2;
+
+      ctx.clearRect(0, 0, cw, ch);
+      ctx.drawImage(img, sx, sy, sw, sh);
+      currentFrameIdx = idx;
     }
 
-    let rafId = null;
-    let lastProgress = -1;
+    // ── Scroll → frame index ─────────────────────────────────
+    function getFrameIdx() {
+      const scrollable = heroSection.offsetHeight - window.innerHeight;
+      const scrolled   = Math.max(0, window.scrollY);
+      const progress   = Math.min(1, scrolled / scrollable);
+      return {
+        idx: Math.min(TOTAL_FRAMES - 1, Math.floor(progress * TOTAL_FRAMES)),
+        progress,
+      };
+    }
 
+    // ── rAF-gated scroll handler ─────────────────────────────
+    let rafPending = false;
     function onScroll() {
-      if (rafId) return;
-      rafId = requestAnimationFrame(() => {
-        rafId = null;
-
-        const sectionTop = heroSection.getBoundingClientRect().top + window.scrollY;
-        const scrollable = heroSection.offsetHeight - window.innerHeight;
-        const scrolled   = window.scrollY - sectionTop;
-        const progress   = Math.max(0, Math.min(1, scrolled / scrollable));
-
-        if (Math.abs(progress - lastProgress) < 0.0005) return;
-        lastProgress = progress;
-
-        // Scrub video currentTime
-        if (videoDuration) {
-          heroVideo.currentTime = progress * videoDuration * 0.998;
-        }
-
-        // Progress bar
-        if (progressFillEl) {
-          progressFillEl.style.transform = `scaleY(${progress})`;
-        }
-
-        // Hint: visible at start, hidden mid-video, replaced by continue at end
-        if (hintEl) {
-          hintEl.style.opacity    = progress < 0.06 ? '1' : '0';
-        }
-        if (continueEl) {
-          continueEl.style.opacity = progress > 0.93 ? '1' : '0';
-        }
+      if (rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(() => {
+        rafPending = false;
+        const { idx, progress } = getFrameIdx();
+        drawFrame(idx);
+        if (progressFillEl) progressFillEl.style.transform = `scaleY(${progress})`;
+        if (hintEl)         hintEl.style.opacity     = progress < 0.04 ? '1' : '0';
+        if (continueEl)     continueEl.style.opacity  = progress > 0.93 ? '1' : '0';
       });
     }
-
     window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+
+    // ── Preload all frames in parallel ───────────────────────
+    let pending = TOTAL_FRAMES;
+    for (let i = 0; i < TOTAL_FRAMES; i++) {
+      const img = new Image();
+      const frameNum = String(i + 1).padStart(4, '0');
+      img.src = `videos/frames/frame-${frameNum}.jpg`;
+      images[i] = img;
+
+      img.onload = () => {
+        loadedCount++;
+        pending--;
+
+        // Draw first frame the moment it's loaded
+        if (i === 0) { drawFrame(0); }
+
+        // Loading bar
+        if (loaderFillEl) {
+          loaderFillEl.style.transform = `scaleX(${loadedCount / TOTAL_FRAMES})`;
+        }
+
+        // All done
+        if (pending === 0) {
+          allReady = true;
+          if (loaderEl) {
+            loaderEl.classList.add('done');
+          }
+          // Snap to correct frame in case user already scrolled
+          onScroll();
+        }
+      };
+      img.onerror = () => { pending--; };
+    }
   })();
 
   // ── Mobile hamburger menu ─────────────────────────────────

@@ -176,9 +176,17 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 /* ── Navigation ────────────────────────────────────────────── */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transform: translateY(-8px);
   transition: background var(--transition-slow), box-shadow var(--transition-slow),
-              border-color var(--transition-slow);
+              border-color var(--transition-slow),
+              opacity 500ms ease, visibility 500ms ease, transform 500ms ease;
   border-bottom: 1px solid transparent;
+}
+/* Revealed after hero scrub zone */
+.nav.nav-visible {
+  opacity: 1; visibility: visible; pointer-events: auto;
+  transform: translateY(0);
 }
 
 .nav-inner {
@@ -304,14 +312,30 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
 .hero-sticky {
   position: sticky; top: 0;
   height: 100vh; overflow: hidden;
+  /* Dark fallback until first canvas frame renders */
+  background: linear-gradient(148deg, #071522 0%, #0D2840 40%, #0d3360 75%, #071e38 100%);
 }
 
-/* Full-bleed video */
-.hero-video {
+/* Full-bleed canvas (image sequence scrubber) */
+.hero-canvas {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
-  object-fit: cover;
-  will-change: transform; /* GPU layer hint */
+  display: block;
+}
+
+/* Loading progress bar — thin line at bottom, fades out when ready */
+.hero-loader {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 10;
+  height: 2px; background: rgba(255,255,255,.08);
+  transition: opacity 600ms ease;
+}
+.hero-loader.done { opacity: 0; pointer-events: none; }
+.hero-loader-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--blue-500), var(--blue-600));
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 200ms ease;
+  border-radius: 0 2px 2px 0;
 }
 
 /* Radial vignette — darkens edges, focuses center */
@@ -464,15 +488,13 @@ input, select, textarea { font-family: inherit; font-size: 1rem; }
   50%       { transform: translateY(6px); opacity: .6; }
 }
 
-/* reduced-motion fallback — show gradient instead of video */
+/* reduced-motion: keep hero at 100vh, canvas hidden, just show gradient bg */
 @media (prefers-reduced-motion: reduce) {
-  .hero-video { display: none; }
-  .hero-sticky {
-    background:
-      radial-gradient(ellipse at 75% 20%, rgba(37,166,217,.25) 0%, transparent 50%),
-      linear-gradient(148deg, #071522 0%, #0D2840 38%, #0d3360 72%, #071e38 100%);
-  }
-  .hero { height: 100vh; }
+  .hero { height: 100vh !important; }
+  .hero-canvas { display: none; }
+  .hero-loader { display: none; }
+  .hero-hint, .hero-continue { display: none; }
+  .hero-progress { display: none; }
 }
 
 /* ── Trust Strip ───────────────────────────────────────────── */

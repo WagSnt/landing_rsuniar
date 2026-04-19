@@ -108,10 +108,13 @@
 
   <div class="hero-sticky">
 
-    <!-- Video background — scrubbed by scroll -->
-    <video class="hero-video" muted playsinline preload="auto" aria-hidden="true">
-      <source src="videos/video_hero_scrub.mp4" type="video/mp4">
-    </video>
+    <!-- Canvas frame-sequence — scrubbed by scroll (Apple-style) -->
+    <canvas class="hero-canvas" aria-hidden="true"></canvas>
+
+    <!-- Loading progress bar (fades out once frames are ready) -->
+    <div class="hero-loader" aria-hidden="true">
+      <div class="hero-loader-fill"></div>
+    </div>
 
     <!-- Overlays for cinematic depth -->
     <div class="hero-vignette"  aria-hidden="true"></div>
