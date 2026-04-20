@@ -29,6 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const nav            = document.querySelector('.nav');
     const trustStrip     = document.querySelector('.trust-strip');
 
+    // Vapor reveal elements
+    const accentEl   = document.querySelector('.hero-accent-line');
+    const titleLine1 = document.querySelector('.hero-title-line1');
+    const titleLine2 = document.querySelector('.hero-title-line2');
+    const subEl      = document.querySelector('.hero-sub');
+    const actionsEl  = document.querySelector('.hero-actions');
+    const floatEl    = document.querySelector('.hero-float-card');
+
     // Nav: reveal smoothly when trust strip enters view (past hero)
     if (nav && trustStrip) {
       const navRevealObs = new IntersectionObserver((entries) => {
@@ -47,10 +55,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReduced) {
-      // Just show nav immediately in reduced-motion mode
       if (nav) nav.classList.add('nav-visible');
       return;
     }
+
+    // ── Vapor reveal helpers ─────────────────────────────────
+    function smoothstep(t) { return t * t * (3 - 2 * t); }
+
+    function vaporReveal(el, progress, start, end) {
+      if (!el) return;
+      const raw = (progress - start) / (end - start);
+      const t   = smoothstep(Math.max(0, Math.min(1, raw)));
+      el.style.opacity = t;
+      if (t >= 1) {
+        el.style.filter    = '';
+        el.style.transform = '';
+      } else {
+        el.style.filter    = `blur(${(1 - t) * 14}px)`;
+        el.style.transform = `translateY(${(1 - t) * 24}px)`;
+      }
+    }
+
+    function updateVaporReveal(p) {
+      vaporReveal(accentEl,   p, 0.05, 0.22);
+      vaporReveal(titleLine1, p, 0.10, 0.32);
+      vaporReveal(titleLine2, p, 0.18, 0.40);
+      vaporReveal(subEl,      p, 0.32, 0.52);
+      vaporReveal(actionsEl,  p, 0.50, 0.68);
+      vaporReveal(floatEl,    p, 0.62, 0.80);
+    }
+
+    // Hide all vapor elements initially
+    [accentEl, titleLine1, titleLine2, subEl, actionsEl, floatEl].forEach(el => {
+      if (!el) return;
+      el.style.opacity   = '0';
+      el.style.filter    = 'blur(16px)';
+      el.style.transform = 'translateY(28px)';
+      el.style.willChange = 'opacity, filter, transform';
+    });
 
     const TOTAL_FRAMES   = 60;
     const SCROLL_PX      = 16; // scroll pixels per frame
@@ -119,6 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (progressFillEl) progressFillEl.style.transform = `scaleY(${progress})`;
         if (hintEl)         hintEl.style.opacity     = progress < 0.04 ? '1' : '0';
         if (continueEl)     continueEl.style.opacity  = progress > 0.93 ? '1' : '0';
+        updateVaporReveal(progress);
       });
     }
     window.addEventListener('scroll', onScroll, { passive: true });
