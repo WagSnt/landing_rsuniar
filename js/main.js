@@ -4,8 +4,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // ── Navigation scroll effect (scrolled styling only) ──────
-  // nav-visible class is managed by IntersectionObserver in hero scrub block
+  // ── Navigation scroll effect ──────────────────────────────
   const nav = document.querySelector('.nav');
   if (nav) {
     const onNavScroll = () => {
@@ -17,187 +16,115 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', onNavScroll, { passive: true });
   }
 
-  // ── Hero — canvas image-sequence scrubber (Apple-style) ───
-  (function initHeroCanvasScrub() {
-    const heroSection    = document.querySelector('.hero');
-    const canvas         = document.querySelector('.hero-canvas');
-    const loaderEl       = document.querySelector('.hero-loader');
-    const loaderFillEl   = document.querySelector('.hero-loader-fill');
-    const progressFillEl = document.querySelector('.hero-progress-fill');
-    const hintEl         = document.querySelector('.hero-hint');
-    const continueEl     = document.querySelector('.hero-continue');
-    const nav            = document.querySelector('.nav');
-    const trustStrip     = document.querySelector('.trust-strip');
+  // ── Hero — autoplay video with intro animation ────────────
+  (function initHeroVideo() {
+    const nav        = document.querySelector('.nav');
+    const trustStrip = document.querySelector('.trust-strip');
+    const introEl    = document.getElementById('hero-intro');
+    const videoEl    = document.getElementById('hero-video');
 
-    // Vapor reveal elements
     const accentEl   = document.querySelector('.hero-accent-line');
     const titleLine1 = document.querySelector('.hero-title-line1');
     const titleLine2 = document.querySelector('.hero-title-line2');
     const subEl      = document.querySelector('.hero-sub');
     const actionsEl  = document.querySelector('.hero-actions');
     const floatEl    = document.querySelector('.hero-float-card');
+    const hintEl     = document.querySelector('.hero-hint');
+    const vaporEls   = [accentEl, titleLine1, titleLine2, subEl, actionsEl, floatEl];
 
-    // Nav: reveal smoothly when trust strip enters view (past hero)
-    if (nav && trustStrip) {
+    if (!videoEl || !introEl) return;
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Nav is locked until hero sequence finishes
+    let heroComplete = false;
+
+    function updateNav() {
+      if (!nav || !trustStrip || !heroComplete) return;
+      const rect = trustStrip.getBoundingClientRect();
+      const show = rect.top < window.innerHeight;
+      nav.classList.toggle('nav-visible', show);
+      if (show) nav.classList.add('scrolled');
+    }
+
+    if (trustStrip) {
       const navRevealObs = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-          // Show nav if trust-strip is visible OR has already scrolled past top
+          if (!heroComplete) return;
           const show = entry.isIntersecting || entry.boundingClientRect.top < 0;
           nav.classList.toggle('nav-visible', show);
-          // Also keep scrolled styling when past hero
           if (show) nav.classList.add('scrolled');
         });
-      }, { threshold: 0, rootMargin: '0px 0px 0px 0px' });
+      }, { threshold: 0 });
       navRevealObs.observe(trustStrip);
     }
 
-    if (!canvas || !heroSection) return;
-
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) {
-      if (nav) nav.classList.add('nav-visible');
-      return;
-    }
-
-    // ── Vapor reveal helpers ─────────────────────────────────
-    function smoothstep(t) { return t * t * (3 - 2 * t); }
-
-    function vaporReveal(el, progress, start, end) {
+    // Hide content elements until video ends
+    vaporEls.forEach(el => {
       if (!el) return;
-      const raw = (progress - start) / (end - start);
-      const t   = smoothstep(Math.max(0, Math.min(1, raw)));
-      el.style.opacity = t;
-      if (t >= 1) {
-        el.style.filter    = '';
-        el.style.transform = '';
-      } else {
-        el.style.filter    = `blur(${(1 - t) * 14}px)`;
-        el.style.transform = `translateY(${(1 - t) * 24}px)`;
-      }
-    }
-
-    function updateVaporReveal(p) {
-      vaporReveal(accentEl,   p, 0.05, 0.22);
-      vaporReveal(titleLine1, p, 0.10, 0.32);
-      vaporReveal(titleLine2, p, 0.18, 0.40);
-      vaporReveal(subEl,      p, 0.32, 0.52);
-      vaporReveal(actionsEl,  p, 0.50, 0.68);
-      vaporReveal(floatEl,    p, 0.62, 0.80);
-    }
-
-    // Hide all vapor elements initially
-    [accentEl, titleLine1, titleLine2, subEl, actionsEl, floatEl].forEach(el => {
-      if (!el) return;
-      el.style.opacity   = '0';
-      el.style.filter    = 'blur(16px)';
-      el.style.transform = 'translateY(28px)';
+      el.style.opacity    = '0';
+      el.style.filter     = 'blur(16px)';
+      el.style.transform  = 'translateY(28px)';
       el.style.willChange = 'opacity, filter, transform';
     });
 
-    const TOTAL_FRAMES   = 60;
-    const SCROLL_PX      = 16; // scroll pixels per frame
-    const ctx            = canvas.getContext('2d');
-    const images         = new Array(TOTAL_FRAMES).fill(null);
-    let loadedCount      = 0;
-    let allReady         = false;
-    let currentFrameIdx  = -1;
-
-    // Set section height so user can scroll through all frames
-    heroSection.style.height = `calc(100vh + ${TOTAL_FRAMES * SCROLL_PX}px)`;
-
-    // ── Canvas sizing (cover behaviour) ─────────────────────
-    function resizeCanvas() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      canvas.width  = Math.floor(window.innerWidth  * dpr);
-      canvas.height = Math.floor(window.innerHeight * dpr);
-      canvas.style.width  = window.innerWidth  + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-      ctx.scale(dpr, dpr);
-      drawFrame(currentFrameIdx < 0 ? 0 : currentFrameIdx);
-    }
-    window.addEventListener('resize', resizeCanvas, { passive: true });
-    resizeCanvas();
-
-    // ── Draw one frame (cover-fit) ───────────────────────────
-    function drawFrame(idx) {
-      const img = images[idx];
-      if (!img?.complete || !img.naturalWidth) return;
-
-      const cw = window.innerWidth;
-      const ch = window.innerHeight;
-      const iw = img.naturalWidth;
-      const ih = img.naturalHeight;
-      const scale = Math.max(cw / iw, ch / ih);
-      const sw    = iw * scale;
-      const sh    = ih * scale;
-      const sx    = (cw - sw) / 2;
-      const sy    = (ch - sh) / 2;
-
-      ctx.clearRect(0, 0, cw, ch);
-      ctx.drawImage(img, sx, sy, sw, sh);
-      currentFrameIdx = idx;
+    if (prefersReduced) {
+      introEl.style.display = 'none';
+      videoEl.style.opacity = '1';
+      heroComplete = true;
+      revealContent(true);
+      updateNav();
+      return;
     }
 
-    // ── Scroll → frame index ─────────────────────────────────
-    function getFrameIdx() {
-      const scrollable = heroSection.offsetHeight - window.innerHeight;
-      const scrolled   = Math.max(0, window.scrollY);
-      const progress   = Math.min(1, scrolled / scrollable);
-      return {
-        idx: Math.min(TOTAL_FRAMES - 1, Math.floor(progress * TOTAL_FRAMES)),
-        progress,
-      };
-    }
-
-    // ── rAF-gated scroll handler ─────────────────────────────
-    let rafPending = false;
-    function onScroll() {
-      if (rafPending) return;
-      rafPending = true;
-      requestAnimationFrame(() => {
-        rafPending = false;
-        const { idx, progress } = getFrameIdx();
-        drawFrame(idx);
-        if (progressFillEl) progressFillEl.style.transform = `scaleY(${progress})`;
-        if (hintEl)         hintEl.style.opacity     = progress < 0.04 ? '1' : '0';
-        if (continueEl)     continueEl.style.opacity  = progress > 0.93 ? '1' : '0';
-        updateVaporReveal(progress);
+    // ── Vapor reveal after video ─────────────────────────────
+    function revealContent(instant) {
+      const delays = [0, 160, 300, 480, 660, 840];
+      vaporEls.forEach((el, i) => {
+        if (!el) return;
+        setTimeout(() => {
+          el.style.transition = 'opacity .85s ease, filter .85s ease, transform .85s ease';
+          el.style.opacity    = '1';
+          el.style.filter     = '';
+          el.style.transform  = '';
+        }, instant ? 0 : delays[i]);
       });
+      if (hintEl) {
+        setTimeout(() => {
+          hintEl.style.transition = 'opacity .6s ease';
+          hintEl.style.opacity    = '1';
+        }, instant ? 0 : 1200);
+      }
     }
-    window.addEventListener('scroll', onScroll, { passive: true });
 
-    // ── Preload all frames in parallel ───────────────────────
-    let pending = TOTAL_FRAMES;
-    for (let i = 0; i < TOTAL_FRAMES; i++) {
-      const img = new Image();
-      const frameNum = String(i + 1).padStart(4, '0');
-      img.src = `videos/frames/frame-${frameNum}.jpg`;
-      images[i] = img;
+    // ── Intro → video sequence ────────────────────────────────
+    // t=0     : intro visible, word fades in (CSS animation)
+    // t=1800ms: intro begins fading out
+    // t=2400ms: intro hidden, video fades in + plays
+    // video ends: content vapor reveal → nav unlocked
 
-      img.onload = () => {
-        loadedCount++;
-        pending--;
+    setTimeout(() => {
+      introEl.style.transition = 'opacity .6s ease';
+      introEl.style.opacity    = '0';
 
-        // Draw first frame the moment it's loaded
-        if (i === 0) { drawFrame(0); }
+      setTimeout(() => {
+        introEl.style.display = 'none';
+        videoEl.style.transition = 'opacity .6s ease';
+        videoEl.style.opacity    = '1';
+        videoEl.play().catch(() => {});
+      }, 600);
+    }, 1800);
 
-        // Loading bar
-        if (loaderFillEl) {
-          loaderFillEl.style.transform = `scaleX(${loadedCount / TOTAL_FRAMES})`;
-        }
-
-        // All done
-        if (pending === 0) {
-          allReady = true;
-          if (loaderEl) {
-            loaderEl.classList.add('done');
-          }
-          // Snap to correct frame in case user already scrolled
-          onScroll();
-        }
-      };
-      img.onerror = () => { pending--; };
+    function onHeroComplete() {
+      heroComplete = true;
+      revealContent(false);
+      updateNav();
     }
+
+    videoEl.addEventListener('ended', onHeroComplete, { once: true });
+
+    // Fallback: if video fails/stalls, unlock after timeout
+    setTimeout(() => { if (!heroComplete) onHeroComplete(); }, 12000);
   })();
 
   // ── Mobile hamburger menu ─────────────────────────────────
@@ -633,7 +560,7 @@ document.head.appendChild(style);
     { btu: 24000,  label: '24.000 BTU', type: 'Split Inverter',     efficiency: 'A+', area: '24 a 32 m²' },
     { btu: 30000,  label: '30.000 BTU', type: 'Split Cassete',      efficiency: 'A',  area: '32 a 40 m²' },
     { btu: 36000,  label: '36.000 BTU', type: 'Split Piso-Teto',    efficiency: 'A',  area: 'Acima de 40 m²' },
-    { btu: 99999,  label: 'VRF / Chiller', type: 'Sistema Central', efficiency: '—',  area: 'Grande porte' },
+    { btu: 99999,  label: 'VRF/VRV',        type: 'Sistema Central', efficiency: '—',  area: 'Grande porte' },
   ];
 
   /* ── Estado da calculadora ──────────────────────────────── */
@@ -789,7 +716,7 @@ document.head.appendChild(style);
       </div>
 
       <div class="calc-product-card">
-        <div class="calc-product-btu">${isVRF ? 'VRF / Chiller' : product.label}</div>
+        <div class="calc-product-btu">${isVRF ? 'VRF/VRV' : product.label}</div>
         <div class="calc-product-type">${product.type}</div>
         <div class="calc-product-detail-grid">
           <div class="calc-product-detail">

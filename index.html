@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Instalação, manutenção e PMOC para ar-condicionado no Sul do Brasil. Projetos VRF e chiller para indústria, saúde e grandes obras. 15 anos de atuação no PR, SC e RS." />
+  <meta name="description" content="Instalação, manutenção e PMOC para ar-condicionado no Sul do Brasil. Projetos VRF/VRV, câmara fria e renovação de ar para indústria, saúde e grandes obras. 15 anos de atuação no PR, SC e RS." />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <link rel="canonical" href="https://www.rsuniar.com.br/" />
 
   <meta property="og:type"        content="website" />
   <meta property="og:locale"      content="pt_BR" />
   <meta property="og:title"       content="Climatização Profissional RS, SC e PR | PMOC, Split, VRF | RS UNIAR" />
-  <meta property="og:description" content="Instalação, manutenção e PMOC para ar-condicionado no Sul do Brasil. Projetos VRF e chiller para indústria, saúde e grandes obras." />
+  <meta property="og:description" content="Instalação, manutenção e PMOC para ar-condicionado no Sul do Brasil. Projetos VRF/VRV, câmara fria e renovação de ar para indústria, saúde e grandes obras." />
   <meta property="og:url"         content="https://www.rsuniar.com.br/" />
   <meta name="twitter:card"       content="summary_large_image" />
 
@@ -37,7 +37,7 @@
       { "@type": "State", "name": "Paraná" }
     ],
     "priceRange": "$$",
-    "description": "Empresa especializada em instalação, manutenção preventiva e corretiva, PMOC e projetos de climatização VRF/Chiller no Sul do Brasil."
+    "description": "Empresa especializada em instalação, manutenção preventiva e corretiva, PMOC, projetos VRF/VRV, câmara fria e renovação de ar no Sul do Brasil."
   }
   </script>
 </head>
@@ -106,83 +106,73 @@
 
 <main id="conteudo-principal">
 
-<!-- ── HERO — Scroll-scrub video ───────────────────────────── -->
+<!-- ── HERO — Autoplay video ─────────────────────────────── -->
 <section class="hero" id="inicio" aria-labelledby="hero-title">
 
-  <div class="hero-sticky">
-
-    <!-- Canvas frame-sequence — scrubbed by scroll (Apple-style) -->
-    <canvas class="hero-canvas" aria-hidden="true"></canvas>
-
-    <!-- Loading progress bar (fades out once frames are ready) -->
-    <div class="hero-loader" aria-hidden="true">
-      <div class="hero-loader-fill"></div>
+  <!-- Intro overlay — shown before video starts -->
+  <div class="hero-intro" id="hero-intro" aria-hidden="true">
+    <div class="hero-intro-inner">
+      <span class="hero-intro-word">PRECISÃO.</span>
+      <span class="hero-intro-sub">Climatização de alto padrão · Sul do Brasil</span>
     </div>
+  </div>
 
-    <!-- Overlays for cinematic depth -->
-    <div class="hero-vignette"  aria-hidden="true"></div>
-    <div class="hero-gradient"  aria-hidden="true"></div>
+  <!-- Background video -->
+  <video class="hero-video" id="hero-video" muted playsinline preload="auto" aria-hidden="true">
+    <source src="videos/video_hero.mp4" type="video/mp4">
+  </video>
 
-    <!-- Content layer — bottom-left editorial -->
-    <div class="hero-content-layer">
-      <div class="container">
-        <div class="hero-content">
+  <!-- Overlays for cinematic depth -->
+  <div class="hero-vignette" aria-hidden="true"></div>
+  <div class="hero-gradient" aria-hidden="true"></div>
 
-          <div class="hero-accent-line" aria-hidden="true">
-            <span class="hero-accent-label">Climatização Premium · Sul do Brasil</span>
-          </div>
+  <!-- Content layer — bottom-left editorial -->
+  <div class="hero-content-layer">
+    <div class="container">
+      <div class="hero-content">
 
-          <h1 class="hero-title" id="hero-title">
-            <span class="hero-title-line1">Climatização de precisão</span><br>
-            <em class="hero-title-line2">para quem não pode parar.</em>
-          </h1>
-
-          <p class="hero-sub">
-            Instalação, manutenção com PMOC conforme a Lei 13.589/2018 e projetos VRF no Sul do Brasil. Atendemos indústrias, hospitais, grandes obras e residências de alto padrão.
-          </p>
-
-          <div class="hero-actions">
-            <a href="#contato" class="btn btn-cta btn-lg">
-              Solicitar orçamento
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-            <a href="https://wa.me/5551999999999?text=Olá,%20gostaria%20de%20solicitar%20um%20orçamento." class="btn btn-ghost-white btn-lg" target="_blank" rel="noopener noreferrer">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-              Falar no WhatsApp
-            </a>
-          </div>
-
+        <div class="hero-accent-line" aria-hidden="true">
+          <span class="hero-accent-label">Climatização Premium · Sul do Brasil</span>
         </div>
 
-        <!-- Floating stats card — Sander House style -->
-        <div class="hero-float-card" aria-hidden="true">
-          <div class="hero-float-num">2.000+</div>
-          <div class="hero-float-txt">obras entregues<br>no Sul do Brasil</div>
-          <div class="hero-float-arrow">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
-          </div>
+        <h1 class="hero-title" id="hero-title">
+          <span class="hero-title-line1">Climatização de precisão</span><br>
+          <em class="hero-title-line2">para quem não pode parar.</em>
+        </h1>
+
+        <p class="hero-sub">
+          Instalação, manutenção com PMOC conforme a Lei 13.589/2018 e projetos VRF no Sul do Brasil. Atendemos indústrias, hospitais, grandes obras e residências de alto padrão.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#contato" class="btn btn-cta btn-lg">
+            Solicitar orçamento
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="https://wa.me/5551999999999?text=Olá,%20gostaria%20de%20solicitar%20um%20orçamento." class="btn btn-ghost-white btn-lg" target="_blank" rel="noopener noreferrer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            Falar no WhatsApp
+          </a>
         </div>
 
       </div>
-    </div>
 
-    <!-- Vertical progress bar (right edge) -->
-    <div class="hero-progress" aria-hidden="true">
-      <div class="hero-progress-fill"></div>
-    </div>
+      <!-- Floating stats card -->
+      <div class="hero-float-card" aria-hidden="true">
+        <div class="hero-float-num">2.000+</div>
+        <div class="hero-float-txt">obras entregues<br>no Sul do Brasil</div>
+        <div class="hero-float-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </div>
+      </div>
 
-    <!-- Scroll hint — role para avançar -->
-    <div class="hero-hint" aria-hidden="true">
-      <span class="hero-hint-label">Role para avançar</span>
-      <svg class="hero-hint-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
     </div>
+  </div>
 
-    <!-- Continue prompt — shown when video ends -->
-    <div class="hero-continue" aria-hidden="true">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
-      <span>Continue explorando</span>
-    </div>
-
+  <!-- Scroll hint — visible after content reveals -->
+  <div class="hero-hint" aria-hidden="true">
+    <span class="hero-hint-label">Explorar</span>
+    <svg class="hero-hint-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
   </div>
 
 </section>
@@ -368,7 +358,7 @@
       <div class="service-item" role="listitem">
         <button class="service-trigger" aria-expanded="false">
           <span class="service-num" aria-hidden="true">04</span>
-          <span class="service-name">Projetos VRF e Chiller</span>
+          <span class="service-name">Projetos VRF/VRV e Câmara Fria</span>
           <span class="service-toggle" aria-hidden="true"></span>
         </button>
         <div class="service-body">
@@ -376,12 +366,13 @@
             <img src="images/services/vrf.jpg" alt="" loading="lazy" class="service-visual-photo" />
           </div>
           <div class="service-body-inner">
-            <p>Dimensionamento, especificação e implantação de sistemas centrais de grande porte para galpões industriais, hospitais, shoppings e edifícios corporativos. Soluções de alta eficiência e controle preciso.</p>
+            <p>Dimensionamento, especificação e implantação de sistemas de grande porte — VRF/VRV, piso-teto, cassete, builtin, câmara fria e renovação de ar — para galpões industriais, hospitais, shoppings e edifícios corporativos.</p>
             <ul class="service-list">
-              <li>Projetos VRF (Variable Refrigerant Flow) para grandes edificações</li>
-              <li>Sistemas Chiller para ambientes industriais e hospitalares</li>
-              <li>Dimensionamento técnico conforme normas ABNT</li>
-              <li>ART e documentação completa incluídas</li>
+              <li>Sistemas VRF/VRV (Variable Refrigerant Flow/Volume) para grandes edificações</li>
+              <li>Cassete, piso-teto, multi-split e builtin para ambientes corporativos e industriais</li>
+              <li>Câmara fria e conservação para indústrias alimentícias e farmacêuticas</li>
+              <li>Renovação de ar e controle de qualidade do ar interior (ABNT NBR 16.401)</li>
+              <li>ART e documentação técnica completa incluídas</li>
             </ul>
             <a href="#contato" class="btn btn-outline-navy btn-sm">Solicitar projeto <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
           </div>
@@ -448,10 +439,10 @@
     </div>
     <div class="gallery-item" role="listitem">
       <div class="gallery-item-img">
-        <img src="images/gallery/obra-industrial.jpg" alt="Chiller industrial em galpão" loading="lazy" />
+        <img src="images/gallery/obra-industrial.jpg" alt="Câmara fria e VRF em galpão industrial" loading="lazy" />
       </div>
       <div class="gallery-item-overlay">
-        <span>Industrial · Chiller</span>
+        <span>Industrial · Câmara Fria</span>
         <span>Novo Hamburgo, RS</span>
       </div>
     </div>
@@ -545,13 +536,13 @@
           </div>
           <div class="seg-text-side">
             <h3>Industrial</h3>
-            <p>Galpões, linhas de produção e cold rooms com controle rigoroso de temperatura e umidade conforme os processos produtivos. Nossos projetos industriais contemplam redundância e alta disponibilidade.</p>
+            <p>Galpões, linhas de produção e câmaras frias com controle rigoroso de temperatura e umidade conforme os processos produtivos. Nossos projetos industriais contemplam redundância e alta disponibilidade.</p>
             <ul>
-              <li>Chiller e torres de resfriamento para galpões de grande porte</li>
+              <li>Sistemas VRF/VRV e multi-split para galpões de grande porte</li>
+              <li>Câmara fria e conservação para indústrias alimentícias e farmacêuticas</li>
               <li>Controle de temperatura e umidade para processos produtivos</li>
-              <li>Cold rooms e câmaras frigoríficas</li>
-              <li>Projetos com redundância e alta disponibilidade</li>
-              <li>Conformidade com normas de segurança industrial</li>
+              <li>Renovação de ar e exaustão industrial</li>
+              <li>Projetos com redundância, alta disponibilidade e conformidade NR-12</li>
             </ul>
             <a href="#contato" class="btn btn-outline-navy btn-sm" style="margin-top:20px">Solicitar projeto <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
           </div>
@@ -806,7 +797,7 @@
           <span class="faq-icon" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
         </button>
         <div class="faq-body">
-          <p>Para <strong>obras qualificadas</strong> — instalações acima de 5 equipamentos, projetos VRF/chiller ou contratos de PMOC — a visita técnica é gratuita. Para diagnósticos avulsos, aplicamos uma taxa que é integralmente abatida do orçamento aprovado.</p>
+          <p>Para <strong>obras qualificadas</strong> — instalações acima de 5 equipamentos, projetos VRF/VRV, câmara fria ou contratos de PMOC — a visita técnica é gratuita. Para diagnósticos avulsos, aplicamos uma taxa que é integralmente abatida do orçamento aprovado.</p>
         </div>
       </div>
 
@@ -911,7 +902,7 @@
                 <option value="instalacao">Instalação</option>
                 <option value="manutencao">Manutenção preventiva/corretiva</option>
                 <option value="pmoc">PMOC — Lei 13.589/2018</option>
-                <option value="vrf">Projeto VRF ou Chiller</option>
+                <option value="vrf">Projeto VRF/VRV, Câmara Fria ou Renovação de Ar</option>
                 <option value="outro">Outro</option>
               </select>
             </div>
@@ -1012,7 +1003,7 @@
           <li><a href="#servicos">Manutenção Corretiva</a></li>
           <li><a href="#servicos">PMOC — Lei 13.589</a></li>
           <li><a href="#servicos">Projetos VRF</a></li>
-          <li><a href="#servicos">Projetos Chiller</a></li>
+          <li><a href="#servicos">Câmara Fria</a></li>
         </ul>
       </div>
 
