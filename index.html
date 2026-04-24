@@ -112,7 +112,7 @@
   <!-- Intro overlay — shown before video starts -->
   <div class="hero-intro" id="hero-intro" aria-hidden="true">
     <div class="hero-intro-inner">
-      <span class="hero-intro-word">PRECISÃO.</span>
+      <span class="hero-intro-word">RS UNIAR</span>
       <span class="hero-intro-sub">Climatização de alto padrão · Sul do Brasil</span>
     </div>
   </div>
@@ -125,6 +125,9 @@
   <!-- Overlays for cinematic depth -->
   <div class="hero-vignette" aria-hidden="true"></div>
   <div class="hero-gradient" aria-hidden="true"></div>
+
+  <!-- Three.js vapor particles — revealed after video ends -->
+  <canvas class="hero-vapor" id="hero-vapor" aria-hidden="true"></canvas>
 
   <!-- Content layer — bottom-left editorial -->
   <div class="hero-content-layer">
@@ -1080,6 +1083,8 @@
   </a>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js" defer></script>
 <script src="js/main.js" defer></script>
 
 <!-- ── CALCULADORA BTUs — Modal ───────────────────────────── -->

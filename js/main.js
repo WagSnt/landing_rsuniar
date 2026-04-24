@@ -16,27 +16,27 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', onNavScroll, { passive: true });
   }
 
-  // ── Hero — autoplay video with intro animation ────────────
+  // ── Hero — GSAP intro + video + Three.js vapor ───────────
   (function initHeroVideo() {
-    const nav        = document.querySelector('.nav');
-    const trustStrip = document.querySelector('.trust-strip');
-    const introEl    = document.getElementById('hero-intro');
-    const videoEl    = document.getElementById('hero-video');
+    const nav         = document.querySelector('.nav');
+    const trustStrip  = document.querySelector('.trust-strip');
+    const introEl     = document.getElementById('hero-intro');
+    const videoEl     = document.getElementById('hero-video');
+    const vaporCanvas = document.getElementById('hero-vapor');
 
     const accentEl   = document.querySelector('.hero-accent-line');
     const titleLine1 = document.querySelector('.hero-title-line1');
     const titleLine2 = document.querySelector('.hero-title-line2');
-    const subEl      = document.querySelector('.hero-sub');
+    const heroSub    = document.querySelector('.hero-sub');
     const actionsEl  = document.querySelector('.hero-actions');
     const floatEl    = document.querySelector('.hero-float-card');
     const hintEl     = document.querySelector('.hero-hint');
-    const vaporEls   = [accentEl, titleLine1, titleLine2, subEl, actionsEl, floatEl];
+    const contentEls = [accentEl, titleLine1, titleLine2, heroSub, actionsEl, floatEl].filter(Boolean);
 
     if (!videoEl || !introEl) return;
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Nav is locked until hero sequence finishes
     let heroComplete = false;
 
     function updateNav() {
@@ -59,73 +59,198 @@ document.addEventListener('DOMContentLoaded', () => {
       navRevealObs.observe(trustStrip);
     }
 
-    // Hide content elements until video ends
-    vaporEls.forEach(el => {
-      if (!el) return;
-      el.style.opacity    = '0';
-      el.style.filter     = 'blur(16px)';
-      el.style.transform  = 'translateY(28px)';
-      el.style.willChange = 'opacity, filter, transform';
-    });
+    // Hide content until video ends
+    contentEls.forEach(el => { el.style.opacity = '0'; });
+    if (hintEl) hintEl.style.opacity = '0';
 
     if (prefersReduced) {
       introEl.style.display = 'none';
       videoEl.style.opacity = '1';
+      contentEls.forEach(el => { el.style.opacity = ''; });
+      if (hintEl) hintEl.style.opacity = '';
       heroComplete = true;
-      revealContent(true);
       updateNav();
       return;
     }
 
-    // ── Vapor reveal after video ─────────────────────────────
-    function revealContent(instant) {
-      const delays = [0, 160, 300, 480, 660, 840];
-      vaporEls.forEach((el, i) => {
-        if (!el) return;
-        setTimeout(() => {
-          el.style.transition = 'opacity .85s ease, filter .85s ease, transform .85s ease';
-          el.style.opacity    = '1';
-          el.style.filter     = '';
-          el.style.transform  = '';
-        }, instant ? 0 : delays[i]);
-      });
-      if (hintEl) {
-        setTimeout(() => {
-          hintEl.style.transition = 'opacity .6s ease';
-          hintEl.style.opacity    = '1';
-        }, instant ? 0 : 1200);
-      }
-    }
-
-    // ── Intro → video sequence ────────────────────────────────
-    // t=0     : intro visible, word fades in (CSS animation)
-    // t=1800ms: intro begins fading out
-    // t=2400ms: intro hidden, video fades in + plays
-    // video ends: content vapor reveal → nav unlocked
-
-    setTimeout(() => {
-      introEl.style.transition = 'opacity .6s ease';
-      introEl.style.opacity    = '0';
-
-      setTimeout(() => {
-        introEl.style.display = 'none';
-        videoEl.style.transition = 'opacity .6s ease';
-        videoEl.style.opacity    = '1';
-        videoEl.play().catch(() => {});
-      }, 600);
-    }, 1800);
+    const wordEl     = introEl.querySelector('.hero-intro-word');
+    const introSubEl = introEl.querySelector('.hero-intro-sub');
 
     function onHeroComplete() {
+      if (heroComplete) return;
       heroComplete = true;
-      revealContent(false);
+
+      // Clear inline opacity, then GSAP animates from 0 → natural
+      contentEls.forEach(el => { el.style.opacity = ''; });
+      if (hintEl) hintEl.style.opacity = '';
+
+      gsap.fromTo(contentEls,
+        { opacity: 0, filter: 'blur(18px)', y: 32 },
+        {
+          duration: 1.1, opacity: 1, filter: 'blur(0px)', y: 0,
+          stagger: 0.12, ease: 'power3.out',
+          clearProps: 'filter,transform,will-change'
+        }
+      );
+      if (hintEl) {
+        gsap.fromTo(hintEl,
+          { opacity: 0 },
+          { duration: 0.7, opacity: 1, ease: 'power2.out', delay: 0.85 }
+        );
+      }
+
       updateNav();
+      if (vaporCanvas) initVaporParticles(vaporCanvas);
     }
 
     videoEl.addEventListener('ended', onHeroComplete, { once: true });
-
-    // Fallback: if video fails/stalls, unlock after timeout
     setTimeout(() => { if (!heroComplete) onHeroComplete(); }, 12000);
+
+    // ── GSAP intro timeline ───────────────────────────────────
+    if (!window.gsap) {
+      // Fallback if CDN didn't load
+      if (wordEl)     { wordEl.style.opacity = '1'; }
+      if (introSubEl) { introSubEl.style.opacity = '1'; }
+      setTimeout(() => {
+        introEl.style.transition = 'opacity .6s ease';
+        introEl.style.opacity    = '0';
+        setTimeout(() => {
+          introEl.style.display    = 'none';
+          videoEl.style.transition = 'opacity .6s ease';
+          videoEl.style.opacity    = '1';
+          videoEl.play().catch(() => {});
+        }, 600);
+      }, 1800);
+      return;
+    }
+
+    const tl = gsap.timeline();
+
+    // 1. Word fades up as a unit — clean luxury reveal
+    tl.fromTo(wordEl,
+      { opacity: 0, y: 22 },
+      { duration: 0.5, opacity: 1, y: 0, ease: 'power2.out' },
+      0.3
+    )
+    // 2. Subtitle fades in
+    .fromTo(introSubEl,
+      { opacity: 0 },
+      { duration: 0.4, opacity: 1, ease: 'power2.out' },
+      0.75
+    )
+    // 3. Hold, then both drift up and fade out
+    .to([wordEl, introSubEl], {
+      duration: 0.5, opacity: 0, y: -20, ease: 'power2.in'
+    }, '+=0.9')
+    // 4. True cross-dissolve: video fades IN at the same time overlay fades OUT
+    //    so combined opacity never drops below 1 — no white flash possible
+    .call(() => { videoEl.play().catch(() => {}); }, null, '+=0.05')
+    .to(videoEl,  { duration: 1.0, opacity: 1, ease: 'power2.inOut' }, '<')
+    .to(introEl,  { duration: 1.0, opacity: 0, ease: 'power2.inOut' }, '<')
+    .set(introEl, { display: 'none' });
   })();
+
+  // ── Three.js vapor particle system ───────────────────────
+  function initVaporParticles(canvas) {
+    if (!window.THREE) return;
+
+    const W = canvas.offsetWidth  || window.innerWidth;
+    const H = canvas.offsetHeight || window.innerHeight;
+
+    const scene    = new THREE.Scene();
+    const camera   = new THREE.PerspectiveCamera(60, W / H, 0.1, 100);
+    camera.position.z = 5;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+    renderer.setSize(W, H);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const COUNT     = 260;
+    const positions = new Float32Array(COUNT * 3);
+    const opacities = new Float32Array(COUNT);
+    const speeds    = new Float32Array(COUNT);
+    const phases    = new Float32Array(COUNT);
+    const sizes     = new Float32Array(COUNT);
+
+    for (let i = 0; i < COUNT; i++) {
+      positions[i * 3]     = (Math.random() - 0.5) * 12;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 3;
+      opacities[i] = Math.random() * 0.55 + 0.1;
+      speeds[i]    = Math.random() * 0.007 + 0.003;
+      phases[i]    = Math.random() * Math.PI * 2;
+      sizes[i]     = Math.random() * 3.5 + 1.0;
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('aOpacity', new THREE.BufferAttribute(opacities, 1));
+    geo.setAttribute('aSpeed',   new THREE.BufferAttribute(speeds,    1));
+    geo.setAttribute('aPhase',   new THREE.BufferAttribute(phases,    1));
+    geo.setAttribute('aSize',    new THREE.BufferAttribute(sizes,     1));
+
+    const mat = new THREE.ShaderMaterial({
+      uniforms: {
+        uTime:   { value: 0 },
+        uReveal: { value: 0 }
+      },
+      vertexShader: `
+        attribute float aOpacity;
+        attribute float aSpeed;
+        attribute float aPhase;
+        attribute float aSize;
+        uniform float uTime;
+        uniform float uReveal;
+        varying float vOpacity;
+        void main() {
+          vOpacity = aOpacity * uReveal;
+          vec3 pos = position;
+          pos.x += sin(uTime * aSpeed * 60.0 + aPhase) * 0.28;
+          pos.y += uTime * aSpeed * 42.0;
+          pos.y  = mod(pos.y + 6.0, 12.0) - 6.0;
+          vec4 mv = modelViewMatrix * vec4(pos, 1.0);
+          gl_PointSize = aSize * (280.0 / -mv.z);
+          gl_Position  = projectionMatrix * mv;
+        }
+      `,
+      fragmentShader: `
+        varying float vOpacity;
+        void main() {
+          float d = length(gl_PointCoord - 0.5);
+          if (d > 0.5) discard;
+          float a = (1.0 - d * 2.0) * vOpacity;
+          gl_FragColor = vec4(0.72, 0.88, 1.0, a);
+        }
+      `,
+      transparent: true,
+      blending:    THREE.AdditiveBlending,
+      depthWrite:  false,
+    });
+
+    scene.add(new THREE.Points(geo, mat));
+
+    gsap.to(canvas, { duration: 1.8, opacity: 0.65, ease: 'power2.out' });
+
+    let startTs = null;
+    function tick(ts) {
+      if (!startTs) startTs = ts;
+      const t = (ts - startTs) * 0.001;
+      mat.uniforms.uTime.value   = t;
+      mat.uniforms.uReveal.value = Math.min(t / 2.0, 1.0);
+      renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    window.addEventListener('resize', () => {
+      const w = canvas.offsetWidth  || window.innerWidth;
+      const h = canvas.offsetHeight || window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    }, { passive: true });
+  }
 
   // ── Mobile hamburger menu ─────────────────────────────────
   const hamburger = document.querySelector('.nav-hamburger');
