@@ -703,7 +703,7 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
 .brands-list span:hover { color: var(--c-blue-500); }
 @keyframes brands-scroll {
   from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(-50%, 0, 0); }
+  to   { transform: translate3d(-25%, 0, 0); }
 }
 
 /* ── 13 · GALLERY STRIP ──────────────────────────────────── */
