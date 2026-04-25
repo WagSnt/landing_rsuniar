@@ -258,13 +258,11 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
 
 .nav-logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
 .nav-logo-badge {
-  width: 36px; height: 36px;
-  border-radius: var(--r-md);
-  overflow: hidden;
+  height: 40px;
+  width: auto;
   flex-shrink: 0;
-  background: var(--c-blue-100);
 }
-.nav-logo-badge img { width: 100%; height: 100%; object-fit: cover; }
+.nav-logo-badge img { height: 100%; width: auto; object-fit: contain; display: block; }
 .nav-logo-text {
   display: flex;
   flex-direction: column;
@@ -656,10 +654,10 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
 
 .service-body { max-height: 0; overflow: hidden; transition: max-height .45s var(--ease); }
 .service-visual-banner {
-  width: 100%; height: clamp(180px, 22vw, 280px);
+  width: 100%; height: clamp(220px, 28vw, 340px);
   overflow: hidden; border-radius: var(--r-lg); margin-bottom: 28px;
 }
-.service-visual-photo { width: 100%; height: 100%; object-fit: cover; }
+.service-visual-photo { width: 100%; height: 100%; object-fit: cover; object-position: center 25%; }
 .service-body-inner { padding-bottom: 36px; padding-left: 76px; max-width: 760px; }
 .service-body-inner > p { font-size: 1rem; color: var(--c-text-muted); line-height: 1.72; margin-bottom: 20px; }
 .service-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
@@ -690,19 +688,22 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
   mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
 }
 .brands-list {
-  display: flex; align-items: center; gap: 52px;
+  display: flex; align-items: center;
   width: max-content;
   animation: brands-scroll 26s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 .brands-list span {
   font-family: var(--ff-display); font-size: 1.5rem; letter-spacing: .1em;
   color: rgba(7,17,30,.2); white-space: nowrap; user-select: none;
   transition: color .25s; cursor: default;
+  padding-inline: 26px;
 }
 .brands-list span:hover { color: var(--c-blue-500); }
 @keyframes brands-scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
 }
 
 /* ── 13 · GALLERY STRIP ──────────────────────────────────── */
@@ -777,10 +778,10 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
 /* ── 15 · PROCESS STEPS ──────────────────────────────────── */
 .process { background: var(--c-bg); }
 .process-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: clamp(20px, 3vw, 48px); margin-top: 56px;
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: clamp(16px, 2.5vw, 40px); margin-top: 56px;
 }
-.process-step { padding-top: 24px; border-top: 2px solid var(--c-border); transition: border-color .3s; }
+.process-step { padding-top: 24px; border-top: 2px solid var(--c-border); transition: border-color .3s; min-width: 0; }
 .process-step:hover { border-top-color: var(--c-blue-500); }
 .process-num {
   font-family: var(--ff-display); font-size: clamp(56px, 8vw, 96px);
@@ -1168,6 +1169,7 @@ textarea { resize: vertical; min-height: 80px; }
 .reveal-delay-2 { transition-delay: .2s; }
 .reveal-delay-3 { transition-delay: .3s; }
 .reveal-delay-4 { transition-delay: .4s; }
+.reveal-delay-5 { transition-delay: .5s; }
 
 /* ── 27 · RESPONSIVE ─────────────────────────────────────── */
 @media (max-width: 1100px) {
@@ -1179,7 +1181,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 @media (max-width: 900px) {
-  .process-grid { grid-template-columns: 1fr 1fr; }
+  .process-grid { grid-template-columns: repeat(5, 1fr); }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .stat:nth-child(3) { border-left: none; padding-left: 0; }
   .stat { padding-block: 24px; }
@@ -1209,6 +1211,9 @@ textarea { resize: vertical; min-height: 80px; }
   .footer-grid { grid-template-columns: 1fr; }
 }
 
+@media (max-width: 600px) {
+  .process-grid { grid-template-columns: repeat(3, 1fr); }
+}
 @media (max-width: 480px) {
   .hero-title { font-size: clamp(44px, 14vw, 68px); }
   .process-grid { grid-template-columns: 1fr; }
