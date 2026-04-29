@@ -551,6 +551,70 @@ const style = document.createElement('style');
 style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
 document.head.appendChild(style);
 
+/* ── Premium UX v5 — Magnetic Buttons ──────────────────────── */
+(function initMagneticButtons() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (window.matchMedia('(hover: none)').matches) return;
+
+  document.querySelectorAll('.btn-cta, .btn-primary').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = (e.clientX - (r.left + r.width  / 2)) / (r.width  / 2);
+      const y = (e.clientY - (r.top  + r.height / 2)) / (r.height / 2);
+      btn.style.transform = `translate(${x * 6}px, ${y * 3}px)`;
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transition = 'transform .5s cubic-bezier(0.34,1.56,0.64,1)';
+      btn.style.transform  = '';
+      setTimeout(() => { btn.style.transition = ''; }, 500);
+    });
+    btn.addEventListener('mousedown',  () => { btn.style.transform = 'scale(.97)'; });
+    btn.addEventListener('mouseup',    () => { btn.style.transform = ''; });
+  });
+})();
+
+/* ── Cursor glow on process cards ────────────────────────────── */
+(function initProcessGlow() {
+  document.querySelectorAll('.process-step').forEach(step => {
+    step.addEventListener('mousemove', e => {
+      const r = step.getBoundingClientRect();
+      step.style.setProperty('--gx', `${((e.clientX - r.left) / r.width)  * 100}%`);
+      step.style.setProperty('--gy', `${((e.clientY - r.top)  / r.height) * 100}%`);
+    });
+  });
+})();
+
+/* ── Staggered gallery items entrance ────────────────────────── */
+(function initGalleryReveal() {
+  const track = document.querySelector('.gallery-track');
+  if (!track || !('IntersectionObserver' in window)) return;
+
+  const items = track.querySelectorAll('.gallery-item');
+  items.forEach((item, i) => {
+    item.style.opacity    = '0';
+    item.style.transform  = 'translateY(28px)';
+    item.style.filter     = 'blur(6px)';
+    item.style.transition = `opacity .7s cubic-bezier(0.32,0.72,0,1) ${i * 0.07}s,
+                              transform .7s cubic-bezier(0.32,0.72,0,1) ${i * 0.07}s,
+                              filter .7s cubic-bezier(0.32,0.72,0,1) ${i * 0.07}s`;
+  });
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        items.forEach(item => {
+          item.style.opacity   = '1';
+          item.style.transform = '';
+          item.style.filter    = 'blur(0px)';
+        });
+        obs.disconnect();
+      }
+    });
+  }, { threshold: 0.1 });
+
+  obs.observe(track);
+})();
+
 /* ============================================================
    Cookie / LGPD Banner
    ============================================================ */
