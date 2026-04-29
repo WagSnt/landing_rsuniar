@@ -551,14 +551,132 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
   color: var(--c-blue-500); text-transform: uppercase;
 }
 
-/* ── 10 · EXPERTISE SECTION ──────────────────────────────── */
+/* ── 10 · DIFERENCIAIS ───────────────────────────────────── */
+.diferenciais {
+  background: var(--c-bg);
+  position: relative; overflow: hidden;
+}
+/* Blueprint grid */
+.diferenciais::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(37,166,217,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37,166,217,.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+/* Radial vignette over grid */
+.diferenciais::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 70% at 50% 50%, transparent 30%, rgba(7,17,30,.05) 100%);
+  pointer-events: none;
+}
+.diferenciais .container { position: relative; z-index: 1; }
+
+.diferenciais-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: clamp(14px, 1.8vw, 22px); margin-top: 52px;
+}
+
+/* Card base */
+.diferencial-card {
+  position: relative;
+  background: var(--c-navy);
+  border-radius: var(--r-lg);
+  padding: clamp(28px, 3vw, 40px) clamp(24px, 2.5vw, 32px) clamp(32px, 3.5vw, 44px);
+  overflow: hidden;
+  cursor: default;
+  box-shadow:
+    0 4px 24px rgba(7,17,30,.20),
+    0 1px 6px rgba(7,17,30,.14),
+    inset 0 1px 0 rgba(255,255,255,.06);
+  will-change: transform;
+}
+.diferencial-card.tilt-leave {
+  transition: transform .65s var(--ease-spring), box-shadow .5s var(--ease);
+}
+
+/* Decorative ordinal number */
+.diferencial-card::before {
+  content: attr(data-num);
+  position: absolute; top: -4px; right: 18px;
+  font-family: var(--ff-display);
+  font-size: 7rem;
+  color: rgba(255,255,255,.038);
+  line-height: 1; letter-spacing: .04em;
+  pointer-events: none; user-select: none;
+}
+
+/* Top accent bar — slides in on hover */
+.diferencial-card::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--c-blue-500) 30%,
+    var(--c-accent) 60%,
+    transparent 100%
+  );
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform .55s var(--ease);
+}
+.diferencial-card:hover::after { transform: scaleX(1); }
+
+/* Cursor-following radial shine */
+.diferencial-shine {
+  position: absolute; inset: 0;
+  background: radial-gradient(
+    circle 200px at var(--sx, 50%) var(--sy, 50%),
+    rgba(37,166,217,.09) 0%,
+    transparent 70%
+  );
+  border-radius: inherit;
+  opacity: 0; transition: opacity .4s;
+  pointer-events: none;
+}
+.diferencial-card:hover .diferencial-shine { opacity: 1; }
+
+/* Hover glow border */
+.diferencial-card:hover {
+  box-shadow:
+    0 20px 72px rgba(7,17,30,.36),
+    0 4px 18px rgba(7,17,30,.22),
+    0 0 0 1px rgba(37,166,217,.38),
+    inset 0 1px 0 rgba(255,255,255,.09);
+}
+
+.diferencial-icon {
+  width: 46px; height: 46px; border-radius: var(--r-md);
+  background: rgba(37,166,217,.11);
+  border: 1px solid rgba(37,166,217,.22);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--c-blue-500); margin-bottom: 24px; flex-shrink: 0;
+  transition: background .4s, border-color .4s, box-shadow .4s;
+}
+.diferencial-card:hover .diferencial-icon {
+  background: rgba(37,166,217,.2);
+  border-color: rgba(37,166,217,.5);
+  box-shadow: 0 0 20px rgba(37,166,217,.22);
+}
+
+.diferencial-title {
+  font-size: 1.0625rem; font-weight: 700; color: #fff;
+  margin-bottom: 12px; letter-spacing: -.015em; line-height: 1.25;
+}
+.diferencial-desc {
+  font-size: .875rem; color: rgba(255,255,255,.48); line-height: 1.72;
+}
+
+/* ── 10b · EXPERTISE SECTION ─────────────────────────────── */
 .expertise-section {
   display: grid; grid-template-columns: 1fr 1fr; min-height: 600px;
 }
 .expertise-photo-side { position: relative; overflow: hidden; }
 .expertise-photo-wrap { position: absolute; inset: 0; }
 .expertise-photo-img {
-  width: 100%; height: 100%; object-fit: cover;
+  width: 100%; height: 100%; object-fit: cover; object-position: center top;
   transition: transform .7s var(--ease);
 }
 .expertise-section:hover .expertise-photo-img { transform: scale(1.04); }
@@ -658,6 +776,14 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; }
   overflow: hidden; border-radius: var(--r-lg); margin-bottom: 28px;
 }
 .service-visual-photo { width: 100%; height: 100%; object-fit: cover; object-position: center 25%; }
+
+/* Foco individual por serviço */
+.service-item:nth-child(1) .service-visual-photo { object-position: center 55%; }  /* PMOC — papel/prancheta */
+.service-item:nth-child(2) .service-visual-photo { object-position: center 42%; }  /* Pré-disposição — tubulação */
+.service-item:nth-child(3) .service-visual-photo { object-position: center 15%; }  /* Instalação — unidade no topo */
+.service-item:nth-child(6) .service-visual-photo { object-position: center 68%; }  /* Projetos — mesa/planta */
+.service-item:nth-child(7) .service-visual-photo { object-position: center 62%; }  /* Renovação — extensão do corredor */
+.service-item:nth-child(8) .service-visual-photo { object-position: center 65%; }  /* Câmara Fria — equipamentos */
 .service-body-inner { padding-bottom: 36px; padding-left: 76px; max-width: 760px; }
 .service-body-inner > p { font-size: 1rem; color: var(--c-text-muted); line-height: 1.72; margin-bottom: 20px; }
 .service-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
@@ -1181,6 +1307,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 @media (max-width: 900px) {
+  .diferenciais-grid { grid-template-columns: 1fr 1fr; }
   .process-grid { grid-template-columns: repeat(5, 1fr); }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .stat:nth-child(3) { border-left: none; padding-left: 0; }
@@ -1216,6 +1343,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 @media (max-width: 480px) {
   .hero-title { font-size: clamp(44px, 14vw, 68px); }
+  .diferenciais-grid { grid-template-columns: 1fr; }
   .process-grid { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .calc-options { grid-template-columns: 1fr 1fr; }

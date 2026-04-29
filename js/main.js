@@ -520,6 +520,32 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+/* ── Diferenciais — 3D card tilt ────────────────────────── */
+(function initDiferenciaisTilt() {
+  const cards = document.querySelectorAll('.diferencial-card');
+  if (!cards.length) return;
+
+  const MAX_TILT = 11;
+
+  cards.forEach(card => {
+    card.addEventListener('mousemove', e => {
+      card.classList.remove('tilt-leave');
+      const r = card.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width  - 0.5;
+      const y = (e.clientY - r.top)  / r.height - 0.5;
+      card.style.transform =
+        `perspective(700px) rotateY(${x * MAX_TILT}deg) rotateX(${-y * MAX_TILT}deg) scale3d(1.03,1.03,1.03)`;
+      card.style.setProperty('--sx', `${(e.clientX - r.left) / r.width  * 100}%`);
+      card.style.setProperty('--sy', `${(e.clientY - r.top)  / r.height * 100}%`);
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.classList.add('tilt-leave');
+      card.style.transform = '';
+    });
+  });
+})();
+
 /* Spin keyframe added via JS to avoid CSS duplication */
 const style = document.createElement('style');
 style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
