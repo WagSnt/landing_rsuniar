@@ -3,7 +3,14 @@
     "allow": [
       "Bash(powershell.exe -Command \"Get-Command node -ErrorAction SilentlyContinue; Get-Command npm -ErrorAction SilentlyContinue; [System.Environment]::GetEnvironmentVariable\\('PATH', 'Machine'\\) -split ';' | Select-String -Pattern 'node|nvm'\")",
       "Bash(ffprobe -v quiet -print_format json -show_streams -show_format c:/projetos/landing_rsuniar/videos/video_hero.mp4)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(python3 -c \"from PIL import Image; img=Image.open\\('c:/projetos/landing_rsuniar/images/logo.png'\\); print\\(img.size\\)\")",
+      "Bash(python -c \"from PIL import Image; img=Image.open\\('c:/projetos/landing_rsuniar/images/logo.png'\\); print\\(img.size\\)\")",
+      "Bash(powershell -command \"\\(Get-Item 'c:/projetos/landing_rsuniar/images/logo.png'\\) | Select-Object Name, Length\")",
+      "Bash(python3 -c ' *)",
+      "Read(//c/Program Files \\(x86\\)/Inkscape/bin/**)",
+      "Bash(node vectorize-logo.js)",
+      "Bash(npm install *)"
     ]
   }
 }

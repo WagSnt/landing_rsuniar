@@ -366,6 +366,7 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; pointer-even
   gap: 18px;
   text-align: center;
 }
+/* Mantido para fallback caso o img não carregue */
 .hero-intro-word {
   font-family: var(--ff-display);
   font-size: clamp(72px, 14vw, 200px);
@@ -374,6 +375,31 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; pointer-even
   line-height: 1;
   opacity: 0;
 }
+
+/* ── Logo na intro: crop + remove-white via SVG filter ───── */
+.hero-intro-logo-wrap {
+  /*
+   * Logo: 1156×216 px (ratio 5.35:1).
+   * Mostrar só os 60% superiores (RS UNIAR sem "Sistemas de Climatização").
+   * Aspect-ratio = 5.35 / 0.60 ≈ 8.92 → usa 8.9
+   */
+  width: clamp(220px, 42vw, 540px);
+  aspect-ratio: 8.9 / 1;
+  overflow: hidden;
+  /* feColorMatrix converte fundo branco → transparente, azul → opaco */
+  filter: url(#logo-dewhite);
+  /* Fallback para browsers sem suporte a filter: url() */
+  /* (o logo azul ainda aparece sobre fundo escuro, apenas com fundo branco) */
+}
+
+.hero-intro-logo {
+  width: 100%;
+  height: auto;
+  display: block;
+  opacity: 0; /* GSAP anima de 0 → 1 */
+  will-change: filter, opacity;
+}
+
 .hero-intro-sub {
   font-family: var(--ff-body);
   font-size: clamp(.65rem, 1.1vw, .8rem);
@@ -383,16 +409,6 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; pointer-even
   opacity: 0;
 }
 
-/* ── Three.js vapor canvas ───────────────────────────────── */
-.hero-vapor {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 3;
-  pointer-events: none;
-  opacity: 0;
-}
 
 /* ── Hero video ──────────────────────────────────────────── */
 .hero-video {

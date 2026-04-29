@@ -22,8 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const trustStrip  = document.querySelector('.trust-strip');
     const introEl     = document.getElementById('hero-intro');
     const videoEl     = document.getElementById('hero-video');
-    const vaporCanvas = document.getElementById('hero-vapor');
-
     const accentEl   = document.querySelector('.hero-accent-line');
     const titleLine1 = document.querySelector('.hero-title-line1');
     const titleLine2 = document.querySelector('.hero-title-line2');
@@ -73,14 +71,13 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const wordEl     = introEl.querySelector('.hero-intro-word');
+    const logoEl     = introEl.querySelector('.hero-intro-logo');
     const introSubEl = introEl.querySelector('.hero-intro-sub');
 
     function onHeroComplete() {
       if (heroComplete) return;
       heroComplete = true;
 
-      // Clear inline opacity, then GSAP animates from 0 → natural
       contentEls.forEach(el => { el.style.opacity = ''; });
       if (hintEl) hintEl.style.opacity = '';
 
@@ -92,24 +89,17 @@ document.addEventListener('DOMContentLoaded', () => {
           clearProps: 'filter,transform,will-change'
         }
       );
-      if (hintEl) {
-        gsap.fromTo(hintEl,
-          { opacity: 0 },
-          { duration: 0.7, opacity: 1, ease: 'power2.out', delay: 0.85 }
-        );
-      }
 
       updateNav();
-      if (vaporCanvas) initVaporParticles(vaporCanvas);
     }
 
     videoEl.addEventListener('ended', onHeroComplete, { once: true });
     setTimeout(() => { if (!heroComplete) onHeroComplete(); }, 12000);
 
-    // ── GSAP intro timeline ───────────────────────────────────
+    // ── GSAP intro timeline — smoke / vapor reveal ────────────
     if (!window.gsap) {
-      // Fallback if CDN didn't load
-      if (wordEl)     { wordEl.style.opacity = '1'; }
+      // Fallback sem GSAP
+      if (logoEl)     { logoEl.style.opacity = '1'; }
       if (introSubEl) { introSubEl.style.opacity = '1'; }
       setTimeout(() => {
         introEl.style.transition = 'opacity .6s ease';
@@ -120,137 +110,53 @@ document.addEventListener('DOMContentLoaded', () => {
           videoEl.style.opacity    = '1';
           videoEl.play().catch(() => {});
         }, 600);
-      }, 1800);
+      }, 2000);
       return;
     }
 
     const tl = gsap.timeline();
 
-    // 1. Word fades up as a unit — clean luxury reveal
-    tl.fromTo(wordEl,
-      { opacity: 0, y: 22 },
-      { duration: 0.5, opacity: 1, y: 0, ease: 'power2.out' },
-      0.3
+    // 1. Logo condensa da fumaça: blur alto + brilho → nítido
+    //    O feColorMatrix do SVG parent converte os pixels difusos brancos em
+    //    transparência, deixando apenas o azul visível — efeito vapor autêntico.
+    tl.fromTo(logoEl,
+      {
+        opacity: 0,
+        filter: 'blur(52px) brightness(6) saturate(1.8)'
+      },
+      {
+        duration: 1.8,
+        opacity: 1,
+        filter: 'blur(0px) brightness(1) saturate(1)',
+        ease: 'power3.out'
+      },
+      0.25
     )
-    // 2. Subtitle fades in
+    // 2. Subtítulo surge suavemente após logo estabilizar
     .fromTo(introSubEl,
       { opacity: 0 },
-      { duration: 0.4, opacity: 1, ease: 'power2.out' },
-      0.75
+      { duration: 0.5, opacity: 1, ease: 'power2.out' },
+      1.6
     )
-    // 3. Hold, then both drift up and fade out
-    .to([wordEl, introSubEl], {
-      duration: 0.5, opacity: 0, y: -20, ease: 'power2.in'
-    }, '+=0.9')
-    // 4. True cross-dissolve: video fades IN at the same time overlay fades OUT
-    //    so combined opacity never drops below 1 — no white flash possible
-    .call(() => { videoEl.play().catch(() => {}); }, null, '+=0.05')
-    .to(videoEl,  { duration: 1.0, opacity: 1, ease: 'power2.inOut' }, '<')
-    .to(introEl,  { duration: 1.0, opacity: 0, ease: 'power2.inOut' }, '<')
+    // 3. Logo se dissipa como vapor (blur + claridade) e subtítulo sobe e some
+    .to(logoEl, {
+      duration: 0.75,
+      opacity: 0,
+      filter: 'blur(28px) brightness(3.5) saturate(0.6)',
+      ease: 'power2.in'
+    }, '+=0.85')
+    .to(introSubEl, {
+      duration: 0.5,
+      opacity: 0,
+      y: -12,
+      ease: 'power2.in'
+    }, '<')
+    // 4. Cross-dissolve sem flash: vídeo entra enquanto overlay sai
+    .call(() => { videoEl.play().catch(() => {}); }, null, '<+0.1')
+    .to(videoEl,  { duration: 1.1, opacity: 1, ease: 'power2.inOut' }, '<')
+    .to(introEl,  { duration: 1.1, opacity: 0, ease: 'power2.inOut' }, '<')
     .set(introEl, { display: 'none' });
   })();
-
-  // ── Three.js vapor particle system ───────────────────────
-  function initVaporParticles(canvas) {
-    if (!window.THREE) return;
-
-    const W = canvas.offsetWidth  || window.innerWidth;
-    const H = canvas.offsetHeight || window.innerHeight;
-
-    const scene    = new THREE.Scene();
-    const camera   = new THREE.PerspectiveCamera(60, W / H, 0.1, 100);
-    camera.position.z = 5;
-
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
-    renderer.setSize(W, H);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
-
-    const COUNT     = 260;
-    const positions = new Float32Array(COUNT * 3);
-    const opacities = new Float32Array(COUNT);
-    const speeds    = new Float32Array(COUNT);
-    const phases    = new Float32Array(COUNT);
-    const sizes     = new Float32Array(COUNT);
-
-    for (let i = 0; i < COUNT; i++) {
-      positions[i * 3]     = (Math.random() - 0.5) * 12;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 3;
-      opacities[i] = Math.random() * 0.55 + 0.1;
-      speeds[i]    = Math.random() * 0.007 + 0.003;
-      phases[i]    = Math.random() * Math.PI * 2;
-      sizes[i]     = Math.random() * 3.5 + 1.0;
-    }
-
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geo.setAttribute('aOpacity', new THREE.BufferAttribute(opacities, 1));
-    geo.setAttribute('aSpeed',   new THREE.BufferAttribute(speeds,    1));
-    geo.setAttribute('aPhase',   new THREE.BufferAttribute(phases,    1));
-    geo.setAttribute('aSize',    new THREE.BufferAttribute(sizes,     1));
-
-    const mat = new THREE.ShaderMaterial({
-      uniforms: {
-        uTime:   { value: 0 },
-        uReveal: { value: 0 }
-      },
-      vertexShader: `
-        attribute float aOpacity;
-        attribute float aSpeed;
-        attribute float aPhase;
-        attribute float aSize;
-        uniform float uTime;
-        uniform float uReveal;
-        varying float vOpacity;
-        void main() {
-          vOpacity = aOpacity * uReveal;
-          vec3 pos = position;
-          pos.x += sin(uTime * aSpeed * 60.0 + aPhase) * 0.28;
-          pos.y += uTime * aSpeed * 42.0;
-          pos.y  = mod(pos.y + 6.0, 12.0) - 6.0;
-          vec4 mv = modelViewMatrix * vec4(pos, 1.0);
-          gl_PointSize = aSize * (280.0 / -mv.z);
-          gl_Position  = projectionMatrix * mv;
-        }
-      `,
-      fragmentShader: `
-        varying float vOpacity;
-        void main() {
-          float d = length(gl_PointCoord - 0.5);
-          if (d > 0.5) discard;
-          float a = (1.0 - d * 2.0) * vOpacity;
-          gl_FragColor = vec4(0.72, 0.88, 1.0, a);
-        }
-      `,
-      transparent: true,
-      blending:    THREE.AdditiveBlending,
-      depthWrite:  false,
-    });
-
-    scene.add(new THREE.Points(geo, mat));
-
-    gsap.to(canvas, { duration: 1.8, opacity: 0.65, ease: 'power2.out' });
-
-    let startTs = null;
-    function tick(ts) {
-      if (!startTs) startTs = ts;
-      const t = (ts - startTs) * 0.001;
-      mat.uniforms.uTime.value   = t;
-      mat.uniforms.uReveal.value = Math.min(t / 2.0, 1.0);
-      renderer.render(scene, camera);
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-
-    window.addEventListener('resize', () => {
-      const w = canvas.offsetWidth  || window.innerWidth;
-      const h = canvas.offsetHeight || window.innerHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    }, { passive: true });
-  }
 
   // ── Mobile hamburger menu ─────────────────────────────────
   const hamburger = document.querySelector('.nav-hamburger');
