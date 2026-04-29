@@ -421,10 +421,7 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; pointer-even
 .hero-content-layer .container {
   width: 100%;
   padding-bottom: clamp(56px, 7vh, 96px);
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: flex-end;
-  gap: 40px;
+  display: block;
 }
 .hero-content { max-width: 740px; }
 
@@ -471,31 +468,42 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; pointer-even
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: var(--r-lg);
-  padding: 22px 26px;
-  min-width: 182px;
+  padding: 20px 22px;
+  min-width: 210px; max-width: 240px;
   box-shadow: var(--shadow-xl);
   border: 1px solid rgba(255,255,255,.6);
-  display: flex; flex-direction: column; gap: 5px;
+  display: flex; flex-direction: column; gap: 8px;
   flex-shrink: 0;
 }
-.hero-float-num {
+.hero-float-stars {
+  display: flex; align-items: center; gap: 7px;
+}
+.hero-float-star-row {
+  color: #f59e0b;
+  font-size: .8rem;
+  letter-spacing: .05em;
+}
+.hero-float-rating {
   font-family: var(--ff-display);
-  font-size: 2.75rem;
-  color: var(--c-blue-500);
-  line-height: 1;
-  letter-spacing: .02em;
+  font-size: .8rem; font-weight: 700;
+  color: var(--c-text);
 }
-.hero-float-txt {
-  font-size: .75rem; font-weight: 500;
-  color: var(--c-text-muted); line-height: 1.45;
+.hero-float-quote {
+  font-size: .72rem; font-style: italic;
+  color: var(--c-text-muted); line-height: 1.55;
+  margin: 0;
 }
-.hero-float-arrow {
-  margin-top: 10px;
-  width: 28px; height: 28px;
-  border-radius: var(--r-md);
-  background: var(--c-blue-50);
-  display: flex; align-items: center; justify-content: center;
-  color: var(--c-blue-500);
+.hero-float-author {
+  display: flex; flex-direction: column; gap: 1px;
+  padding-top: 2px;
+  border-top: 1px solid var(--c-border);
+}
+.hero-float-author-name {
+  font-size: .72rem; font-weight: 700;
+  color: var(--c-text);
+}
+.hero-float-author-city {
+  font-size: .67rem; color: var(--c-text-muted);
 }
 
 
@@ -843,7 +851,11 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; pointer-even
   font-size: .7rem; font-weight: 600; letter-spacing: .13em;
   text-transform: uppercase; color: rgba(255,255,255,.45);
 }
-.gallery-strip-hint { font-size: .75rem; color: rgba(255,255,255,.25); letter-spacing: .04em; }
+.gallery-strip-hint {
+  font-size: .75rem; color: rgba(255,255,255,.55); letter-spacing: .06em;
+  display: flex; align-items: center; gap: 6px;
+}
+.gallery-strip-hint svg { flex-shrink: 0; }
 .gallery-track {
   display: flex; gap: 16px; overflow-x: auto;
   padding-inline: clamp(20px, 4vw, 48px); padding-bottom: 48px;
@@ -1428,41 +1440,6 @@ header {
   .nav-drawer { margin-inline: 16px; }
 }
 
-/* ── P2 · Section Labels — Pill Badges ───────────────────── */
-.section-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: .67rem;
-  font-weight: 700;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--c-blue-500);
-  margin-bottom: 20px;
-  background: rgba(37,166,217,.07);
-  border: 1px solid rgba(37,166,217,.18);
-  padding: 5px 14px 5px 10px;
-  border-radius: var(--r-pill);
-}
-.section-label::before {
-  content: '';
-  display: block;
-  width: 5px; height: 5px;
-  background: var(--c-blue-500);
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-.section-label::after { display: none !important; }
-
-.section-label--light {
-  color: rgba(255,255,255,.8);
-  background: rgba(255,255,255,.08);
-  border-color: rgba(255,255,255,.16);
-}
-.section-label--light::before { background: var(--c-accent); }
-
-.section-intro--center .section-label { justify-content: center; }
-.section-intro--center .section-label::before { display: none; }
 
 /* ── P3 · Section Titles — More editorial ────────────────── */
 .section-title {
@@ -1538,62 +1515,6 @@ header {
 }
 
 /* ── P6 · Trust Strip — Premium Card Grid ───────────────── */
-.trust-strip {
-  background: var(--c-bg);
-  border-bottom: 1px solid var(--c-border);
-  border-top: none;
-  padding-block: 28px;
-}
-.trust-items {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  overflow: visible;
-  -webkit-overflow-scrolling: auto;
-}
-.trust-div { display: none; }
-.trust-item {
-  flex: unset; min-width: unset;
-  padding-inline: 0;
-  /* Outer shell */
-  background: rgba(7,17,30,.03);
-  border: 1px solid var(--c-border);
-  border-radius: var(--r-xl);
-  padding: 4px;
-  transition: border-color .3s, box-shadow .3s;
-}
-.trust-item:hover {
-  border-color: var(--c-blue-200);
-  box-shadow: var(--shadow-sm);
-}
-.trust-item:first-child { padding-left: 4px; }
-.trust-item-core {
-  background: var(--c-white);
-  border-radius: calc(var(--r-xl) - 4px);
-  padding: 20px 22px 18px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
-  display: flex; flex-direction: column; gap: 4px;
-  height: 100%;
-}
-.trust-item strong {
-  font-size: clamp(28px, 3.8vw, 46px);
-}
-.trust-item > span { display: none; }
-.trust-item-core > span {
-  font-size: .74rem; font-weight: 500;
-  color: var(--c-text-muted); line-height: 1.4;
-}
-.trust-item--badges .trust-item-core {
-  flex-direction: row; flex-wrap: wrap; gap: 6px; align-items: center;
-}
-
-@media (max-width: 900px) {
-  .trust-items { grid-template-columns: 1fr 1fr; }
-  .trust-item--badges { grid-column: span 2; }
-}
-@media (max-width: 480px) {
-  .trust-items { grid-template-columns: 1fr 1fr; gap: 10px; }
-}
 
 /* ── P7 · Hero Float Card — Double Bezel ────────────────── */
 .hero-float-card {
@@ -1610,22 +1531,22 @@ header {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: var(--r-xl);
-  padding: 22px 26px;
+  padding: 20px 22px;
   box-shadow: var(--shadow-xl), inset 0 1px 0 rgba(255,255,255,.9);
-  min-width: 182px;
-  display: flex; flex-direction: column; gap: 5px;
+  min-width: 210px; max-width: 240px;
+  display: flex; flex-direction: column; gap: 8px;
 }
 
-/* ── P8 · Gallery — Z-Axis Stagger ──────────────────────── */
-.gallery-track { perspective: 1400px; }
+/* ── P8 · Gallery — Horizontal Strip ────────────────────── */
+.gallery-track { align-items: flex-start; cursor: grab; }
+.gallery-track.is-dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
 .gallery-item {
   transition:
     transform .55s var(--ease-premium),
     box-shadow .55s;
 }
-.gallery-item:nth-child(even) { transform: translateY(14px); }
 .gallery-item:hover {
-  transform: translateY(-6px) scale(1.02) !important;
+  transform: translateY(-6px) scale(1.02);
   box-shadow: 0 28px 72px rgba(7,17,30,.55);
   z-index: 10;
 }
@@ -1825,12 +1746,10 @@ header {
 
 /* ── P20 · Responsive Mobile Overrides ──────────────────── */
 @media (max-width: 768px) {
-  .gallery-item:nth-child(even) { transform: none; }
   .gallery-item:hover { transform: none !important; }
   .testimonial-shell { padding: 3px; }
-  .trust-item-core { padding: 16px 18px 14px; }
+
 }
 @media (max-width: 600px) {
   .process-step { padding: 20px 18px 18px; }
-  .trust-items { grid-template-columns: 1fr 1fr; }
 }

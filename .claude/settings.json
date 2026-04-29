@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(powershell.exe -Command \"Get-Command node -ErrorAction SilentlyContinue; Get-Command npm -ErrorAction SilentlyContinue; [System.Environment]::GetEnvironmentVariable\\('PATH', 'Machine'\\) -split ';' | Select-String -Pattern 'node|nvm'\")",
-      "Bash(ffprobe -v quiet -print_format json -show_streams -show_format c:/projetos/landing_rsuniar/videos/video_hero.mp4)"
+      "Bash(ffprobe -v quiet -print_format json -show_streams -show_format c:/projetos/landing_rsuniar/videos/video_hero.mp4)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }

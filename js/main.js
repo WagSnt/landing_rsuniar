@@ -584,6 +584,40 @@ document.head.appendChild(style);
   });
 })();
 
+/* ── Gallery drag-to-scroll (mouse) ──────────────────────────── */
+(function initGalleryDrag() {
+  const track = document.querySelector('.gallery-track');
+  if (!track) return;
+
+  let isDown = false, startX = 0, scrollLeft = 0;
+
+  track.addEventListener('mousedown', e => {
+    isDown = true;
+    track.classList.add('is-dragging');
+    startX = e.pageX - track.offsetLeft;
+    scrollLeft = track.scrollLeft;
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (!isDown) return;
+    isDown = false;
+    track.classList.remove('is-dragging');
+  });
+
+  track.addEventListener('mouseleave', () => {
+    if (!isDown) return;
+    isDown = false;
+    track.classList.remove('is-dragging');
+  });
+
+  track.addEventListener('mousemove', e => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - track.offsetLeft;
+    track.scrollLeft = scrollLeft - (x - startX) * 1.4;
+  });
+})();
+
 /* ── Staggered gallery items entrance ────────────────────────── */
 (function initGalleryReveal() {
   const track = document.querySelector('.gallery-track');
