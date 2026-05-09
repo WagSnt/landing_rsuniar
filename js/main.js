@@ -144,38 +144,161 @@ document.addEventListener('DOMContentLoaded', () => {
     statEls.forEach(el => counterObs.observe(el));
   }
 
-  // ── Service accordion ─────────────────────────────────────
-  const serviceItems = document.querySelectorAll('.service-item');
-  serviceItems.forEach(item => {
-    const trigger = item.querySelector('.service-trigger');
-    const body    = item.querySelector('.service-body');
-    if (!trigger || !body) return;
+  // ── Services cycle wheel ──────────────────────────────────
+  (function initServicesCycle() {
+    const CX = 250, CY = 250;
+    const OR = 194, IR = 130;
+    const COUNT = 8;
+    const GAP   = 4;
+    const SEG   = 360 / COUNT - GAP;
+    const LABEL_R = 162;
+    const COLORS = ['#0D1E32','#142840','#1A3D5E','#1A6A9A','#1A6A9A','#1A90C0','#1A90C0','#25A6D9'];
+    const ACTIVE  = '#25A6D9';
 
-    // Set initial max-height for the open item
-    if (item.classList.contains('open')) {
-      body.style.maxHeight = body.scrollHeight + 'px';
+    const SERVICES = [
+      { num:'01', name:'PMOC', short:'PMOC',
+        desc:'O Plano de Manutenção, Operação e Controle é obrigatório para ambientes com capacidade instalada acima de 5 TR. Na RS UNIAR, o PMOC é elaborado e assinado por engenheiro CREA, com cronograma, relatórios e documentação completa.',
+        bullets:['Elaboração e execução do PMOC completo','Assinatura de engenheiro CREA responsável','Relatórios técnicos e documentação em dia','Clínicas, hospitais, corporativos e indústrias'],
+        cta:'Regularizar meu PMOC' },
+      { num:'02', name:'Pré-disposição', short:'Pré-\ndisposição',
+        desc:'Preparar o espaço antes da instalação é o que separa um serviço bem feito de um problema futuro. A pré-disposição contempla toda a infraestrutura necessária, com tubulação executada com materiais de primeira linha.',
+        bullets:['Tubulação executada com precisão','Materiais de primeira linha em todos os pontos','Compatível com todos os tipos de equipamento','Garantia de 12 meses sobre o serviço executado'],
+        cta:'Ver planejamento' },
+      { num:'03', name:'Instalação', short:'Instalação',
+        desc:'A RS UNIAR realiza instalações com o mesmo cuidado independente do porte da obra. Equipe própria, materiais de primeira linha e atenção a cada detalhe da execução.',
+        bullets:['Hi-wall, cassete, multi-split, VRV/VRF','Execução por equipe própria e qualificada','Materiais de primeira linha em toda a instalação','Garantia de 6 meses sobre o serviço executado'],
+        cta:'Agendar instalação' },
+      { num:'04', name:'Assistência Técnica', short:'Assistência\nTécnica',
+        desc:'A RS UNIAR atende com agilidade, diagnostica com precisão e resolve sem enrolação — por técnicos que conhecem o que estão fazendo.',
+        bullets:['Diagnóstico técnico preciso antes de qualquer reparo','Atendimento em Santa Cruz do Sul e Vale do Rio Pardo','Equipe própria e qualificada','Garantia de 90 dias sobre o serviço executado'],
+        cta:'Solicitar Assistência' },
+      { num:'05', name:'Manutenção Preventiva', short:'Manutenção\nPreventiva',
+        desc:'O melhor problema é o que nunca acontece. A manutenção preventiva mantém seus equipamentos funcionando com eficiência, prolonga a vida útil e evita paradas inesperadas.',
+        bullets:['Limpeza, revisão e regulagem dos equipamentos','Visitas programadas conforme necessidade do cliente','Relatórios técnicos de cada atendimento','Atendimento a residências, empresas e indústrias'],
+        cta:'Programar manutenção' },
+      { num:'06', name:'Projetos de Climatização', short:'Projetos',
+        desc:'Um bom sistema de climatização começa no papel. Desenvolvemos projetos sob medida para cada espaço, considerando volumetria, uso, orientação solar e especificidades do ambiente.',
+        bullets:['Projetos residenciais, corporativos e industriais','Dimensionamento técnico com engenheiro CREA','Compatível com sistemas hi-wall, multi-split, cassete e central','Documentação técnica completa'],
+        cta:'Solicite seu projeto' },
+      { num:'07', name:'Renovação de Ar', short:'Renovação\nde Ar',
+        desc:'A renovação de ar garante a entrada controlada de ar externo no ambiente, reduzindo a concentração de CO², odores e partículas em suspensão.',
+        bullets:['Projetos para ambientes comerciais, clínicas e corporativos','Compatível com sistemas de climatização existentes','Melhora da qualidade do ar e bem-estar dos ocupantes','Elaboração e execução sob medida'],
+        cta:'Peça sua renovação' },
+      { num:'08', name:'Câmara Fria', short:'Câmara\nFria',
+        desc:'Conservar com precisão é tão importante quanto refrigerar. Realizamos a montagem de câmaras frias com rigor técnico e materiais adequados para cada aplicação.',
+        bullets:['Montagem sob medida para cada necessidade','Aplicações para alimentos, medicamentos e insumos','Materiais e equipamentos de primeira linha','Acompanhamento técnico em todas as etapas'],
+        cta:'Agendar instalação' },
+    ];
+
+    const svgNS    = 'http://www.w3.org/2000/svg';
+    const segGroup = document.getElementById('svc-segments');
+    const dotsEl   = document.getElementById('svc-dots');
+    const detailEl = document.getElementById('svc-detail');
+    if (!segGroup || !dotsEl || !detailEl) return;
+
+    function polar(angleDeg, r) {
+      const rad = (angleDeg - 90) * Math.PI / 180;
+      return { x: CX + r * Math.cos(rad), y: CY + r * Math.sin(rad) };
     }
 
-    trigger.addEventListener('click', () => {
-      const isOpen = item.classList.contains('open');
+    function arcPath(a0, a1) {
+      const s  = polar(a0, OR), e  = polar(a1, OR);
+      const si = polar(a1, IR), ei = polar(a0, IR);
+      const lg = a1 - a0 > 180 ? 1 : 0;
+      return `M${s.x},${s.y} A${OR},${OR},0,${lg},1,${e.x},${e.y} L${si.x},${si.y} A${IR},${IR},0,${lg},0,${ei.x},${ei.y}Z`;
+    }
 
-      // Close all
-      serviceItems.forEach(i => {
-        i.classList.remove('open');
-        const b = i.querySelector('.service-body');
-        if (b) b.style.maxHeight = '0';
-        const t = i.querySelector('.service-trigger');
-        if (t) t.setAttribute('aria-expanded', 'false');
+    const segs = [], dots = [];
+
+    SERVICES.forEach((svc, i) => {
+      const a0  = i * (360 / COUNT) + GAP / 2;
+      const a1  = a0 + SEG;
+      const mid = (a0 + a1) / 2;
+      const lp  = polar(mid, LABEL_R);
+
+      const path = document.createElementNS(svgNS, 'path');
+      path.setAttribute('d', arcPath(a0, a1));
+      path.setAttribute('fill', COLORS[i]);
+      path.classList.add('svc-seg');
+      path.dataset.index = i;
+      path.setAttribute('role', 'button');
+      path.setAttribute('tabindex', '-1');
+      path.setAttribute('aria-label', svc.name);
+      path.style.outline = 'none';
+      segGroup.appendChild(path);
+      segs.push(path);
+
+      const lines = svc.short.split('\n');
+      const lineH = 13, totalH = lines.length * lineH;
+      lines.forEach((line, li) => {
+        const txt = document.createElementNS(svgNS, 'text');
+        txt.setAttribute('x', lp.x);
+        txt.setAttribute('y', lp.y - totalH / 2 + li * lineH + 9);
+        txt.setAttribute('text-anchor', 'middle');
+        txt.setAttribute('fill', 'white');
+        txt.setAttribute('font-size', '11');
+        txt.setAttribute('font-weight', '700');
+        txt.setAttribute('font-family', 'Plus Jakarta Sans,sans-serif');
+        txt.style.pointerEvents = 'none';
+        txt.textContent = line;
+        segGroup.appendChild(txt);
       });
 
-      // Open clicked if it was closed
-      if (!isOpen) {
-        item.classList.add('open');
-        body.style.maxHeight = body.scrollHeight + 'px';
-        trigger.setAttribute('aria-expanded', 'true');
-      }
+      const dot = document.createElement('button');
+      dot.classList.add('svc-dot');
+      dot.dataset.index = i;
+      dot.setAttribute('role', 'tab');
+      dot.setAttribute('aria-label', svc.name);
+      dotsEl.appendChild(dot);
+      dots.push(dot);
     });
-  });
+
+    let current = 0, timer;
+
+    function activate(idx) {
+      current = idx;
+      segs.forEach((seg, i) => {
+        const on = i === idx;
+        seg.classList.toggle('active', on);
+        seg.setAttribute('fill', on ? ACTIVE : COLORS[i]);
+        seg.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      dots.forEach((dot, i) => dot.classList.toggle('active', i === idx));
+
+      const svc = SERVICES[idx];
+      const arrow = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+      detailEl.innerHTML =
+        `<div class="svc-detail-inner">` +
+        `<p class="svc-detail-num">${svc.num}</p>` +
+        `<h3 class="svc-detail-name">${svc.name}</h3>` +
+        `<p class="svc-detail-desc">${svc.desc}</p>` +
+        `<ul class="svc-detail-bullets">${svc.bullets.map(b => `<li>${b}</li>`).join('')}</ul>` +
+        `<a href="#contato" class="btn btn-outline-navy btn-sm">${svc.cta}${arrow}</a>` +
+        `</div>`;
+    }
+
+    function startAuto() {
+      clearInterval(timer);
+      timer = setInterval(() => activate((current + 1) % COUNT), 3500);
+    }
+
+    segs.forEach(seg => {
+      seg.addEventListener('click', () => { clearInterval(timer); activate(+seg.dataset.index); startAuto(); });
+      seg.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); seg.click(); } });
+    });
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => { clearInterval(timer); activate(+dot.dataset.index); startAuto(); });
+    });
+
+    const wheelSvg = document.getElementById('svc-wheel');
+    if (wheelSvg) {
+      wheelSvg.addEventListener('mouseenter', () => clearInterval(timer));
+      wheelSvg.addEventListener('mouseleave', startAuto);
+    }
+
+    activate(0);
+    startAuto();
+  })();
 
   // ── Segment tabs ──────────────────────────────────────────
   const segmentTabs   = document.querySelectorAll('.segment-tab');
