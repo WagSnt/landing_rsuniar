@@ -10,7 +10,8 @@
       "Bash(python3 -c ' *)",
       "Read(//c/Program Files \\(x86\\)/Inkscape/bin/**)",
       "Bash(node vectorize-logo.js)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(Select-Object Name)"
     ]
   }
 }

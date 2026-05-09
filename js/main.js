@@ -4,24 +4,12 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // ── Navigation scroll effect ──────────────────────────────
-  const nav = document.querySelector('.nav');
-  if (nav) {
-    const onNavScroll = () => {
-      // Only toggle scrolled (white bg) — visibility is handled separately
-      if (nav.classList.contains('nav-visible')) {
-        nav.classList.toggle('scrolled', window.scrollY > 40);
-      }
-    };
-    window.addEventListener('scroll', onNavScroll, { passive: true });
-  }
+  // ── Navigation scroll effect — handled inside initHero ─────
 
-  // ── Hero — GSAP intro + video + Three.js vapor ───────────
-  (function initHeroVideo() {
-    const nav         = document.querySelector('.nav');
-    const trustStrip  = document.querySelector('.trust-strip');
-    const introEl     = document.getElementById('hero-intro');
-    const videoEl     = document.getElementById('hero-video');
+  // ── Hero — reveal de texto + controle da nav por scroll ────
+  (function initHero() {
+    const nav        = document.querySelector('.nav');
+    const bgImg      = document.getElementById('hero-bg-img');
     const accentEl   = document.querySelector('.hero-accent-line');
     const titleLine1 = document.querySelector('.hero-title-line1');
     const titleLine2 = document.querySelector('.hero-title-line2');
@@ -31,48 +19,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const hintEl     = document.querySelector('.hero-hint');
     const contentEls = [accentEl, titleLine1, titleLine2, heroSub, actionsEl, floatEl].filter(Boolean);
 
-    if (!videoEl || !introEl) return;
-
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
     let heroComplete = false;
 
+    // Nav aparece ao rolar ~80% da altura do hero
     function updateNav() {
-      if (!nav || !trustStrip || !heroComplete) return;
-      const rect = trustStrip.getBoundingClientRect();
-      const show = rect.top < window.innerHeight;
+      if (!nav || !heroComplete) return;
+      const show = window.scrollY > window.innerHeight * 0.8;
       nav.classList.toggle('nav-visible', show);
       if (show) nav.classList.add('scrolled');
+      else      nav.classList.remove('scrolled');
     }
 
-    if (trustStrip) {
-      const navRevealObs = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (!heroComplete) return;
-          const show = entry.isIntersecting || entry.boundingClientRect.top < 0;
-          nav.classList.toggle('nav-visible', show);
-          if (show) nav.classList.add('scrolled');
-        });
-      }, { threshold: 0 });
-      navRevealObs.observe(trustStrip);
-    }
+    if (nav) window.addEventListener('scroll', updateNav, { passive: true });
 
-    // Hide content until video ends
     contentEls.forEach(el => { el.style.opacity = '0'; });
     if (hintEl) hintEl.style.opacity = '0';
-
-    if (prefersReduced) {
-      introEl.style.display = 'none';
-      videoEl.style.opacity = '1';
-      contentEls.forEach(el => { el.style.opacity = ''; });
-      if (hintEl) hintEl.style.opacity = '';
-      heroComplete = true;
-      updateNav();
-      return;
-    }
-
-    const logoEl     = introEl.querySelector('.hero-intro-logo');
-    const introSubEl = introEl.querySelector('.hero-intro-sub');
 
     function onHeroComplete() {
       if (heroComplete) return;
@@ -80,6 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       contentEls.forEach(el => { el.style.opacity = ''; });
       if (hintEl) hintEl.style.opacity = '';
+
+      if (prefersReduced || !window.gsap) {
+        updateNav();
+        return;
+      }
 
       gsap.fromTo(contentEls,
         { opacity: 0, filter: 'blur(18px)', y: 32 },
@@ -93,69 +60,19 @@ document.addEventListener('DOMContentLoaded', () => {
       updateNav();
     }
 
-    videoEl.addEventListener('ended', onHeroComplete, { once: true });
-    setTimeout(() => { if (!heroComplete) onHeroComplete(); }, 12000);
+    function scheduleReveal() { setTimeout(onHeroComplete, 200); }
 
-    // ── GSAP intro timeline — smoke / vapor reveal ────────────
-    if (!window.gsap) {
-      // Fallback sem GSAP
-      if (logoEl)     { logoEl.style.opacity = '1'; }
-      if (introSubEl) { introSubEl.style.opacity = '1'; }
-      setTimeout(() => {
-        introEl.style.transition = 'opacity .6s ease';
-        introEl.style.opacity    = '0';
-        setTimeout(() => {
-          introEl.style.display    = 'none';
-          videoEl.style.transition = 'opacity .6s ease';
-          videoEl.style.opacity    = '1';
-          videoEl.play().catch(() => {});
-        }, 600);
-      }, 2000);
-      return;
+    if (bgImg) {
+      if (bgImg.complete && bgImg.naturalWidth > 0) {
+        scheduleReveal();
+      } else {
+        bgImg.addEventListener('load',  scheduleReveal, { once: true });
+        bgImg.addEventListener('error', scheduleReveal, { once: true });
+        setTimeout(onHeroComplete, 2500);
+      }
+    } else {
+      scheduleReveal();
     }
-
-    const tl = gsap.timeline();
-
-    // 1. Logo condensa da fumaça: blur alto + brilho → nítido
-    //    O feColorMatrix do SVG parent converte os pixels difusos brancos em
-    //    transparência, deixando apenas o azul visível — efeito vapor autêntico.
-    tl.fromTo(logoEl,
-      {
-        opacity: 0,
-        filter: 'blur(52px) brightness(6) saturate(1.8)'
-      },
-      {
-        duration: 1.8,
-        opacity: 1,
-        filter: 'blur(0px) brightness(1) saturate(1)',
-        ease: 'power3.out'
-      },
-      0.25
-    )
-    // 2. Subtítulo surge suavemente após logo estabilizar
-    .fromTo(introSubEl,
-      { opacity: 0 },
-      { duration: 0.5, opacity: 1, ease: 'power2.out' },
-      1.6
-    )
-    // 3. Logo se dissipa como vapor (blur + claridade) e subtítulo sobe e some
-    .to(logoEl, {
-      duration: 0.75,
-      opacity: 0,
-      filter: 'blur(28px) brightness(3.5) saturate(0.6)',
-      ease: 'power2.in'
-    }, '+=0.85')
-    .to(introSubEl, {
-      duration: 0.5,
-      opacity: 0,
-      y: -12,
-      ease: 'power2.in'
-    }, '<')
-    // 4. Cross-dissolve sem flash: vídeo entra enquanto overlay sai
-    .call(() => { videoEl.play().catch(() => {}); }, null, '<+0.1')
-    .to(videoEl,  { duration: 1.1, opacity: 1, ease: 'power2.inOut' }, '<')
-    .to(introEl,  { duration: 1.1, opacity: 0, ease: 'power2.inOut' }, '<')
-    .set(introEl, { display: 'none' });
   })();
 
   // ── Mobile hamburger menu ─────────────────────────────────

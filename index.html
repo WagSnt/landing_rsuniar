@@ -99,44 +99,19 @@
   </div>
 </header>
 
-<!-- SVG filter: remove white background from logo PNG -->
-<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
-  <defs>
-    <filter id="logo-dewhite" color-interpolation-filters="sRGB">
-      <!-- Alpha = −R −G −B + 3·A → white→transparent, blue pixels→opaque -->
-      <feColorMatrix type="matrix"
-        values="1 0 0 0 0
-                0 1 0 0 0
-                0 0 1 0 0
-               -1 -1 -1 3 0"/>
-    </filter>
-  </defs>
-</svg>
 
 <main id="conteudo-principal">
 
-<!-- ── HERO — Autoplay video ─────────────────────────────── -->
+<!-- ── HERO ────────────────────────────────────────────────── -->
 <section class="hero" id="inicio" aria-labelledby="hero-title">
 
-  <!-- Intro overlay — shown before video starts -->
-  <div class="hero-intro" id="hero-intro" aria-hidden="true">
-    <div class="hero-intro-inner">
-      <!-- Logo cropado: mostra só a tipografia principal, sem "Sistemas de Climatização" -->
-      <div class="hero-intro-logo-wrap">
-        <img class="hero-intro-logo" src="images/logo.svg" alt="RS UNIAR" draggable="false" />
-      </div>
-      <span class="hero-intro-sub">Climatização de alto padrão · Sul do Brasil</span>
-    </div>
-  </div>
-
-  <!-- Background video -->
-  <video class="hero-video" id="hero-video" muted playsinline preload="auto" aria-hidden="true">
-    <source src="videos/video_hero.mp4" type="video/mp4">
-  </video>
+  <!-- Background image -->
+  <img class="hero-bg-img" id="hero-bg-img" src="images/imgFundoHero.png" alt="" aria-hidden="true" fetchpriority="high">
 
   <!-- Overlays for cinematic depth -->
   <div class="hero-vignette" aria-hidden="true"></div>
   <div class="hero-gradient" aria-hidden="true"></div>
+  <div class="hero-overlay-left" aria-hidden="true"></div>
 
   <!-- Content layer — bottom-left editorial -->
   <div class="hero-content-layer">
@@ -189,21 +164,13 @@
         <strong><span data-counter="25" data-suffix="+">25+</span></strong>
         <span>anos de mercado</span>
       </div>
-      <div class="trust-div" aria-hidden="true"></div>
       <div class="trust-item">
         <strong><span data-counter="2000" data-suffix="+">2.000+</span></strong>
         <span>obras entregues</span>
       </div>
-      <div class="trust-div" aria-hidden="true"></div>
       <div class="trust-item">
         <strong><span data-counter="50" data-suffix="+">50+</span></strong>
         <span>Vale do Rio Pardo e região</span>
-      </div>
-      <div class="trust-div" aria-hidden="true"></div>
-      <div class="trust-item trust-item--badges">
-        <span class="trust-badge">CREA-RS</span>
-        <span class="trust-badge">PMOC</span>
-        <span class="trust-badge">ABNT</span>
       </div>
     </div>
   </div>
@@ -511,7 +478,7 @@
 </div>
 
 <!-- ── GALERIA DE OBRAS ─────────────────────────────────────── -->
-<div class="gallery-strip" aria-label="Galeria de obras RS UNIAR">
+<div class="gallery-strip" aria-label="Galeria de obras RS UNIAR" hidden>
   <div class="gallery-strip-head">
     <span class="gallery-strip-label">Galeria de obras</span>
     <span class="gallery-strip-hint" aria-hidden="true">
@@ -715,6 +682,31 @@
   </div>
 </section>
 
+<!-- ── CALCULADORA BTUs ──────────────────────────────────── -->
+<section class="calc-cta-section" id="calculadora" aria-labelledby="calc-cta-title">
+  <div class="container">
+    <div class="calc-cta-inner">
+      <div class="calc-cta-content reveal">
+        <p class="section-label section-label--light">Ferramenta gratuita</p>
+        <h2 class="calc-cta-title" id="calc-cta-title">Descubra o BTU certo<br>para o seu ambiente.</h2>
+        <p>6 perguntas. Menos de 2 minutos. Baseado na norma ABNT NBR 16.401.</p>
+        <ul class="calc-features">
+          <li>Considera área, insolação, tipo de ambiente e ocupação</li>
+          <li>Recomendação de capacidade e tipo de equipamento</li>
+          <li>Gratuito, sem cadastro</li>
+        </ul>
+      </div>
+      <div class="calc-cta-action reveal reveal-delay-2">
+        <button type="button" data-open-calc class="btn btn-cta btn-lg calc-open-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="14" y2="14"/></svg>
+          Iniciar calculadora
+        </button>
+        <p class="calc-note">6 perguntas · ~2 minutos · Gratuito</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ── STATS — Seção navy ─────────────────────────────────── -->
 <section class="stats-section" aria-label="Números da RS UNIAR">
   <div class="container">
@@ -753,8 +745,11 @@
     </div>
     <div class="expertise-overlay-stat reveal">
       <div class="expertise-stat-inner">
-        <div class="expertise-overlay-num">2.000+</div>
-        <div class="expertise-overlay-txt">Obras entregues<br>no Sul do Brasil</div>
+        <svg class="expertise-stat-seal" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <circle cx="32" cy="32" r="28" stroke="var(--c-blue-500)" stroke-width="1.5" stroke-dasharray="4 3"/>
+          <circle cx="32" cy="32" r="21" fill="var(--c-blue-500)" fill-opacity=".08"/>
+          <path d="M24 32l5 5 11-10" stroke="var(--c-blue-500)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
     </div>
     <div class="expertise-photo-border" aria-hidden="true"></div>
@@ -891,31 +886,6 @@
       </article>
       </div>
 
-    </div>
-  </div>
-</section>
-
-<!-- ── CALCULADORA BTUs ──────────────────────────────────── -->
-<section class="calc-cta-section" id="calculadora" aria-labelledby="calc-cta-title">
-  <div class="container">
-    <div class="calc-cta-inner">
-      <div class="calc-cta-content reveal">
-        <p class="section-label section-label--light">Ferramenta gratuita</p>
-        <h2 class="calc-cta-title" id="calc-cta-title">Descubra o BTU certo<br>para o seu ambiente.</h2>
-        <p>6 perguntas. Menos de 2 minutos. Baseado na norma ABNT NBR 16.401.</p>
-        <ul class="calc-features">
-          <li>Considera área, insolação, tipo de ambiente e ocupação</li>
-          <li>Recomendação de capacidade e tipo de equipamento</li>
-          <li>Gratuito, sem cadastro</li>
-        </ul>
-      </div>
-      <div class="calc-cta-action reveal reveal-delay-2">
-        <button type="button" data-open-calc class="btn btn-cta btn-lg calc-open-btn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="14" y2="14"/></svg>
-          Iniciar calculadora
-        </button>
-        <p class="calc-note">6 perguntas · ~2 minutos · Gratuito</p>
-      </div>
     </div>
   </div>
 </section>
@@ -1207,36 +1177,6 @@
         </ul>
       </div>
 
-      <div class="footer-col">
-        <h4>Áreas de atuação</h4>
-        <div class="footer-cities">
-          <span class="footer-city">Porto Alegre</span>
-          <span class="footer-city">Caxias do Sul</span>
-          <span class="footer-city">Canoas</span>
-          <span class="footer-city">Pelotas</span>
-          <span class="footer-city">Santa Maria</span>
-          <span class="footer-city">Novo Hamburgo</span>
-          <span class="footer-city">Florianópolis</span>
-          <span class="footer-city">Joinville</span>
-          <span class="footer-city">Blumenau</span>
-          <span class="footer-city">Itajaí</span>
-          <span class="footer-city">Curitiba</span>
-          <span class="footer-city">Londrina</span>
-          <span class="footer-city">Maringá</span>
-          <span class="footer-city">Cascavel</span>
-          <span class="footer-city">+ 40 cidades</span>
-        </div>
-        <div class="footer-contact-links">
-          <a href="tel:+5551999999999">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l1.27-.95a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            (51) 9 9999-9999
-          </a>
-          <a href="mailto:contato@rsuniar.com.br">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            contato@rsuniar.com.br
-          </a>
-        </div>
-      </div>
 
     </div>
 
