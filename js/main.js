@@ -156,35 +156,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const ACTIVE  = '#25A6D9';
 
     const SERVICES = [
-      { num:'01', name:'PMOC', short:'PMOC',
+      { num:'01', name:'PMOC', short:'PMOC', img:'images/services/pmoc.jpg',
         desc:'O Plano de Manutenção, Operação e Controle é obrigatório para ambientes com capacidade instalada acima de 5 TR. Na RS UNIAR, o PMOC é elaborado e assinado por engenheiro CREA, com cronograma, relatórios e documentação completa.',
         bullets:['Elaboração e execução do PMOC completo','Assinatura de engenheiro CREA responsável','Relatórios técnicos e documentação em dia','Clínicas, hospitais, corporativos e indústrias'],
         cta:'Regularizar meu PMOC' },
-      { num:'02', name:'Pré-disposição', short:'Pré-\ndisposição',
+      { num:'02', name:'Pré-disposição', short:'Pré-\ndisposição', img:'images/services/predisposicao.png',
         desc:'Preparar o espaço antes da instalação é o que separa um serviço bem feito de um problema futuro. A pré-disposição contempla toda a infraestrutura necessária, com tubulação executada com materiais de primeira linha.',
         bullets:['Tubulação executada com precisão','Materiais de primeira linha em todos os pontos','Compatível com todos os tipos de equipamento','Garantia de 12 meses sobre o serviço executado'],
         cta:'Ver planejamento' },
-      { num:'03', name:'Instalação', short:'Instalação',
+      { num:'03', name:'Instalação', short:'Instalação', img:'images/services/instalacao.jpg',
         desc:'A RS UNIAR realiza instalações com o mesmo cuidado independente do porte da obra. Equipe própria, materiais de primeira linha e atenção a cada detalhe da execução.',
         bullets:['Hi-wall, cassete, multi-split, VRV/VRF','Execução por equipe própria e qualificada','Materiais de primeira linha em toda a instalação','Garantia de 6 meses sobre o serviço executado'],
         cta:'Agendar instalação' },
-      { num:'04', name:'Assistência Técnica', short:'Assistência\nTécnica',
+      { num:'04', name:'Assistência Técnica', short:'Assistência\nTécnica', img:'images/services/assistencia.png',
         desc:'A RS UNIAR atende com agilidade, diagnostica com precisão e resolve sem enrolação — por técnicos que conhecem o que estão fazendo.',
         bullets:['Diagnóstico técnico preciso antes de qualquer reparo','Atendimento em Santa Cruz do Sul e Vale do Rio Pardo','Equipe própria e qualificada','Garantia de 90 dias sobre o serviço executado'],
         cta:'Solicitar Assistência' },
-      { num:'05', name:'Manutenção Preventiva', short:'Manutenção\nPreventiva',
+      { num:'05', name:'Manutenção Preventiva', short:'Manutenção\nPreventiva', img:'images/services/manutencao.jpg',
         desc:'O melhor problema é o que nunca acontece. A manutenção preventiva mantém seus equipamentos funcionando com eficiência, prolonga a vida útil e evita paradas inesperadas.',
         bullets:['Limpeza, revisão e regulagem dos equipamentos','Visitas programadas conforme necessidade do cliente','Relatórios técnicos de cada atendimento','Atendimento a residências, empresas e indústrias'],
         cta:'Programar manutenção' },
-      { num:'06', name:'Projetos de Climatização', short:'Projetos',
+      { num:'06', name:'Projetos de Climatização', short:'Projetos', img:'images/services/projetos.png',
         desc:'Um bom sistema de climatização começa no papel. Desenvolvemos projetos sob medida para cada espaço, considerando volumetria, uso, orientação solar e especificidades do ambiente.',
         bullets:['Projetos residenciais, corporativos e industriais','Dimensionamento técnico com engenheiro CREA','Compatível com sistemas hi-wall, multi-split, cassete e central','Documentação técnica completa'],
         cta:'Solicite seu projeto' },
-      { num:'07', name:'Renovação de Ar', short:'Renovação\nde Ar',
+      { num:'07', name:'Renovação de Ar', short:'Renovação\nde Ar', img:'images/services/renovacao.png',
         desc:'A renovação de ar garante a entrada controlada de ar externo no ambiente, reduzindo a concentração de CO², odores e partículas em suspensão.',
         bullets:['Projetos para ambientes comerciais, clínicas e corporativos','Compatível com sistemas de climatização existentes','Melhora da qualidade do ar e bem-estar dos ocupantes','Elaboração e execução sob medida'],
         cta:'Peça sua renovação' },
-      { num:'08', name:'Câmara Fria', short:'Câmara\nFria',
+      { num:'08', name:'Câmara Fria', short:'Câmara\nFria', img:'images/services/instalacao.jpg',
         desc:'Conservar com precisão é tão importante quanto refrigerar. Realizamos a montagem de câmaras frias com rigor técnico e materiais adequados para cada aplicação.',
         bullets:['Montagem sob medida para cada necessidade','Aplicações para alimentos, medicamentos e insumos','Materiais e equipamentos de primeira linha','Acompanhamento técnico em todas as etapas'],
         cta:'Agendar instalação' },
@@ -195,6 +195,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const dotsEl   = document.getElementById('svc-dots');
     const detailEl = document.getElementById('svc-detail');
     if (!segGroup || !dotsEl || !detailEl) return;
+
+    const centerImgsEl = document.getElementById('svc-center-imgs');
+    const centerImgs = [];
+    if (centerImgsEl) {
+      SERVICES.forEach(svc => {
+        const img = document.createElementNS(svgNS, 'image');
+        img.setAttribute('href', svc.img);
+        img.setAttribute('x', '137');
+        img.setAttribute('y', '137');
+        img.setAttribute('width', '226');
+        img.setAttribute('height', '226');
+        img.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+        img.style.opacity = '0';
+        centerImgsEl.appendChild(img);
+        centerImgs.push(img);
+      });
+    }
 
     function polar(angleDeg, r) {
       const rad = (angleDeg - 90) * Math.PI / 180;
@@ -208,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return `M${s.x},${s.y} A${OR},${OR},0,${lg},1,${e.x},${e.y} L${si.x},${si.y} A${IR},${IR},0,${lg},0,${ei.x},${ei.y}Z`;
     }
 
-    const segs = [], dots = [];
+    const segs = [], dots = [], groups = [];
 
     SERVICES.forEach((svc, i) => {
       const a0  = i * (360 / COUNT) + GAP / 2;
@@ -216,16 +233,25 @@ document.addEventListener('DOMContentLoaded', () => {
       const mid = (a0 + a1) / 2;
       const lp  = polar(mid, LABEL_R);
 
+      const group = document.createElementNS(svgNS, 'g');
+      group.classList.add('svc-seg-group');
+      group.dataset.index = i;
+      group.setAttribute('role', 'button');
+      group.setAttribute('tabindex', '-1');
+      group.setAttribute('aria-label', svc.name);
+      group.style.outline = 'none';
+      group.style.cursor = 'pointer';
+      segGroup.appendChild(group);
+      groups.push(group);
+
       const path = document.createElementNS(svgNS, 'path');
       path.setAttribute('d', arcPath(a0, a1));
       path.setAttribute('fill', COLORS[i]);
       path.classList.add('svc-seg');
       path.dataset.index = i;
-      path.setAttribute('role', 'button');
-      path.setAttribute('tabindex', '-1');
-      path.setAttribute('aria-label', svc.name);
+      path.setAttribute('aria-hidden', 'true');
       path.style.outline = 'none';
-      segGroup.appendChild(path);
+      group.appendChild(path);
       segs.push(path);
 
       const lines = svc.short.split('\n');
@@ -241,7 +267,16 @@ document.addEventListener('DOMContentLoaded', () => {
         txt.setAttribute('font-family', 'Plus Jakarta Sans,sans-serif');
         txt.style.pointerEvents = 'none';
         txt.textContent = line;
-        segGroup.appendChild(txt);
+        group.appendChild(txt);
+      });
+
+      group.addEventListener('mouseenter', () => {
+        if (i === current) return;
+        if (window.gsap) gsap.to(group, { scale: 1.04, duration: 0.28, ease: 'power2.out', svgOrigin: `${CX} ${CY}` });
+      });
+      group.addEventListener('mouseleave', () => {
+        if (i === current) return;
+        if (window.gsap) gsap.to(group, { scale: 1, duration: 0.35, ease: 'power2.inOut', svgOrigin: `${CX} ${CY}` });
       });
 
       const dot = document.createElement('button');
@@ -259,11 +294,22 @@ document.addEventListener('DOMContentLoaded', () => {
       current = idx;
       segs.forEach((seg, i) => {
         const on = i === idx;
-        seg.classList.toggle('active', on);
         seg.setAttribute('fill', on ? ACTIVE : COLORS[i]);
         seg.setAttribute('aria-selected', on ? 'true' : 'false');
+        groups[i].classList.toggle('active', on);
+        if (window.gsap) gsap.to(groups[i], { scale: 1, duration: 0.3, ease: 'power2.out', svgOrigin: `${CX} ${CY}` });
       });
       dots.forEach((dot, i) => dot.classList.toggle('active', i === idx));
+
+      if (centerImgs.length) {
+        centerImgs.forEach((img, i) => {
+          if (window.gsap) {
+            gsap.to(img, { opacity: i === idx ? 1 : 0, duration: 0.55, ease: 'power2.inOut' });
+          } else {
+            img.style.opacity = i === idx ? '1' : '0';
+          }
+        });
+      }
 
       const svc = SERVICES[idx];
       const arrow = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
@@ -282,9 +328,9 @@ document.addEventListener('DOMContentLoaded', () => {
       timer = setInterval(() => activate((current + 1) % COUNT), 3500);
     }
 
-    segs.forEach(seg => {
-      seg.addEventListener('click', () => { clearInterval(timer); activate(+seg.dataset.index); startAuto(); });
-      seg.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); seg.click(); } });
+    groups.forEach(group => {
+      group.addEventListener('click', () => { clearInterval(timer); activate(+group.dataset.index); startAuto(); });
+      group.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); group.click(); } });
     });
     dots.forEach(dot => {
       dot.addEventListener('click', () => { clearInterval(timer); activate(+dot.dataset.index); startAuto(); });

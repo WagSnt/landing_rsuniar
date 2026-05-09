@@ -11,7 +11,8 @@
       "Read(//c/Program Files \\(x86\\)/Inkscape/bin/**)",
       "Bash(node vectorize-logo.js)",
       "Bash(npm install *)",
-      "Bash(Select-Object Name)"
+      "Bash(Select-Object Name)",
+      "PowerShell(Get-ChildItem \"c:\\\\Users\\\\wagne\\\\OneDrive\\\\Documentos\\\\projetos\\\\landing_rsuniar\" | Where-Object { $_.Name -ne \"node_modules\" } | Select-Object Name)"
     ]
   }
 }

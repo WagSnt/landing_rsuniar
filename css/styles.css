@@ -385,7 +385,7 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; pointer-even
   width: 100%;
   display: block;
 }
-.hero-content { max-width: 740px; }
+.hero-content { max-width: 620px; }
 
 .hero-accent-line {
   display: flex; align-items: center; gap: 12px;
@@ -418,8 +418,9 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; pointer-even
   font-size: clamp(.875rem, 1.3vw, 1.0625rem);
   color: rgba(255,255,255,.72);
   line-height: 1.68;
-  max-width: 520px;
+  max-width: 100%;
   margin-bottom: 36px;
+  text-wrap: pretty;
 }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 
@@ -606,16 +607,21 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; pointer-even
   overflow: visible;
 }
 
-.svc-seg {
+.svc-seg-group {
   cursor: pointer;
-  transform-origin: 250px 250px;
-  transition: opacity .4s cubic-bezier(.32,.72,0,1), transform .4s cubic-bezier(.32,.72,0,1);
+  outline: none;
+  transition: opacity .4s cubic-bezier(.32,.72,0,1);
+}
+.svc-seg-group:focus { outline: none; }
+.svc-seg-group:not(.active) { opacity: .38; }
+.svc-seg-group.active { opacity: 1; }
+.svc-seg-group:hover:not(.active) { opacity: .65; }
+
+.svc-seg {
+  transition: fill .4s cubic-bezier(.32,.72,0,1);
   outline: none;
 }
 .svc-seg:focus { outline: none; }
-.svc-seg:not(.active) { opacity: .38; }
-.svc-seg.active { opacity: 1; }
-.svc-seg:hover:not(.active) { opacity: .62; transform: scale(1.03); }
 
 .svc-dots {
   display: flex;
@@ -685,7 +691,11 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; pointer-even
 
 /* ── 11b · BRAND BREAK ───────────────────────────────────── */
 .brand-break {
-  background: var(--c-navy);
+  background-color: var(--c-navy);
+  background-image: url('../images/brand-break-bg.png');
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
   padding-block: clamp(80px, 10vw, 140px);
   position: relative;
   overflow: hidden;
@@ -693,7 +703,9 @@ header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; pointer-even
 .brand-break::before {
   content: '';
   position: absolute; inset: 0;
-  background: radial-gradient(ellipse 80% 60% at 50% 110%, rgba(37,166,217,.14) 0%, transparent 65%);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 110%, rgba(37,166,217,.18) 0%, transparent 65%),
+    linear-gradient(rgba(7,17,30,.75), rgba(7,17,30,.75));
   pointer-events: none;
 }
 .brand-break-inner {
@@ -1555,8 +1567,7 @@ header {
 
 /* ── 1280px: respiro de container ────────────────────────── */
 @media (max-width: 1280px) {
-  .hero-content     { max-width: 660px; }
-  .hero-sub         { max-width: 560px; }
+  .hero-content     { max-width: 580px; }
 }
 
 /* ── 1100px: expertise / footer / grids iniciais ─────────── */
@@ -1586,18 +1597,30 @@ header {
   .testimonials-grid    { grid-template-columns: 1fr; }
 
   /* Hero */
-  .hero-sub             { font-size: .9375rem; max-width: 520px; }
+  .hero-sub             { font-size: .9375rem; }
 }
 
 /* ── 768px: tablet — ponto crítico de navegação ──────────── */
 @media (max-width: 768px) {
+
+  /* — Brand break — */
+  .brand-break { background-attachment: scroll; }
 
   /* — Navegação — */
   .nav-links, .nav-cta  { display: none; }
   .nav-hamburger        { display: flex; }
   .nav-drawer           { display: flex; margin-inline: 16px; }
   .nav-logo             { display: none; }
-  .nav-pill-row         { padding: 12px 16px 0; }
+  .nav-pill-row         { justify-content: flex-end; padding: 16px 16px 0; }
+  .nav                  { width: auto; min-width: 0; padding: 6px;
+                          background: transparent !important;
+                          backdrop-filter: none !important;
+                          -webkit-backdrop-filter: none !important;
+                          box-shadow: none !important;
+                          border-color: transparent !important; }
+  .nav.scrolled         { background: transparent !important;
+                          box-shadow: none !important; }
+  .nav-hamburger span   { background: var(--c-blue-500); }
   .whatsapp-fab         { bottom: 24px; }
 
   /* — Hero — */

@@ -123,7 +123,7 @@
         </div>
 
         <h1 class="hero-title" id="hero-title">
-          <span class="hero-title-line1">Climatização de alto padrão</span><br>
+          <span class="hero-title-line1">Climatização de<br>alto padrão</span><br>
           <em class="hero-title-line2">para quem exige o melhor.</em>
         </h1>
 
@@ -196,14 +196,18 @@
       <div class="svc-wheel-wrap reveal reveal-delay-1">
         <svg class="svc-wheel-svg" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg"
              role="group" aria-label="Ciclo de serviços RS UNIAR" id="svc-wheel">
+          <defs>
+            <clipPath id="svc-center-clip">
+              <circle cx="250" cy="250" r="113"/>
+            </clipPath>
+          </defs>
           <g id="svc-segments"></g>
-          <circle cx="250" cy="250" r="114" fill="#07111E"/>
+          <g id="svc-center-imgs" clip-path="url(#svc-center-clip)"></g>
+          <circle cx="250" cy="250" r="114" fill="#07111E" opacity="0.8"/>
           <circle cx="250" cy="250" r="111" fill="none" stroke="rgba(37,166,217,.15)" stroke-width="1"/>
-          <text x="250" y="234" text-anchor="middle" fill="rgba(255,255,255,.38)"
-                font-size="9" font-family="'Courier New',monospace" letter-spacing="3">RS UNIAR</text>
-          <text x="250" y="256" text-anchor="middle" fill="white"
+          <text x="250" y="241" text-anchor="middle" dominant-baseline="central" fill="white"
                 font-size="15" font-family="Plus Jakarta Sans,sans-serif" font-weight="700">Ciclo</text>
-          <text x="250" y="274" text-anchor="middle" fill="white"
+          <text x="250" y="259" text-anchor="middle" dominant-baseline="central" fill="white"
                 font-size="15" font-family="Plus Jakarta Sans,sans-serif" font-weight="700">completo</text>
         </svg>
         <div class="svc-dots" id="svc-dots" role="tablist" aria-label="Navegação de serviços"></div>
@@ -217,7 +221,7 @@
   </div>
 </section>
 <!-- ── MARCAS AUTORIZADAS ─────────────────────────────────── -->
-<div class="brands-strip" aria-label="Marcas autorizadas RS UNIAR">
+<div class="brands-strip" aria-label="Marcas autorizadas RS UNIAR" hidden>
   <p class="brands-strip-label">Marcas autorizadas</p>
   <div class="brands-track">
     <div class="brands-list" aria-hidden="true">
